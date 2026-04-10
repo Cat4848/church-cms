@@ -2,49 +2,71 @@ package db.mysql;
 
 import db.SqlDatabase;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.List;
 
 public class MySqlDatabase implements SqlDatabase {
-  final String dbContext;
+  private final DataSource dataSource;
+  private Connection connection;
 
   /**
    * The MySQL database connection with handy utility methods.
-   * */
-  public MySqlDatabase(String dbContext) {
-    this.dbContext = dbContext;
+   */
+  public MySqlDatabase(DataSource dataSource) {
+    this.dataSource = dataSource;
   }
 
   /**
-   * Executes a simple SQL query with no parameters.
+   * Executes a {@code SELECT} SQL query with parameters.
+   * The {@code executeQuery()} method on the {@code PreparedStatement}
+   * only executes {@code SELECT} statements that return a {@code ResultSet}.
+   * To execute an {@code INSERT}, {@code UPDATE} or {@code DELETE} SQL statement,
+   * please use the {@code executeUpdate()} method provided by the {@code SqlDatabase} interface.
+   *
    * @param sql String The SQL query string.
-   * @return ResultSet The ResultSet iterator from the database.
-   * */
-  public ResultSet execute(String sql, Object[] params) throws NamingException, SQLException {
-    Connection connection = getConnection();
-    PreparedStatement statement = connection.prepareStatement(sql);
-
-    int paramsSize = params.length;
-    for (int i = 0; i < paramsSize; i++) {
-      statement.setObject(i, params[i]);
-    }
-
-    ResultSet result = statement.executeQuery();
-
-    connection.close();
-    statement.close();
-
-    return result;
+   * @return {@code ResultSet} The iterator from the database.
+   */
+  public ResultSet executeQuery(String sql, List<Object> params) throws SQLException {
+    PreparedStatement statement = prepareStatement(sql, params);
+    return statement.executeQuery();
   }
 
-  private Connection getConnection() throws NamingException, SQLException {
-    InitialContext context = new InitialContext();
-    DataSource dataSource = (DataSource) context.lookup(dbContext);
-    return dataSource.getConnection();
+  /**
+   * Executes an {@code INSERT}, {@code UPDATE} or {@code DELETE} SQL statement with parameters.
+   * The {@code executeUpdate()} method on the {@code PreparedStatement}
+   * only executes DSL (Data Manipulation Statements) like {@code INSERT}, {@code UPDATE} or {@code DELETE}
+   * which do not return a {@code ResultSet}.
+   * To execute a {@code SELECT} SQL statement,
+   * please use the {@code executeSelect()} method provided by the {@code SqlDatabase} interface.
+   *
+   * @param sql String The SQL query string.
+   * @return {@code ResultSet} The iterator from the database that contains the generated IDs.
+   *
+   */
+  public ResultSet executeUpdate(String sql, List<Object> params) throws SQLException {
+    try(Connection conn = dataSource.getConnection();
+    PreparedStatement stm = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+      int paramsSize = params.size();
+      for (int i = 0; i < paramsSize; i++) {
+        stm.setObject(i + 1, params.get(i));
+      }
+      return stm.getGeneratedKeys();
+    }
+  }
+
+  private PreparedStatement prepareStatement(String sql, List<Object> params) throws SQLException {
+    try (Connection connection = dataSource.getConnection();
+         PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+      int paramsSize = params.size();
+      for (int i = 0; i < paramsSize; i++) {
+        statement.setObject(i + 1, params.get(i));
+      }
+      return statement;
+    }
+  }
+
+  public void closeConnection() throws SQLException {
+    if (connection != null) connection.close();
   }
 }

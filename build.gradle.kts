@@ -20,6 +20,8 @@ dependencies {
     implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
     implementation("org.mindrot:jbcrypt:0.4")
     implementation(platform("org.testcontainers:testcontainers-bom:1.21.4"))
+    implementation("org.slf4j:slf4j-api:2.0.17")
+    implementation("ch.qos.logback:logback-classic:1.5.32")
 //    test
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("io.rest-assured:rest-assured:6.0.0")

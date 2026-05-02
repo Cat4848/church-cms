@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.HttpMethod;
 
 import java.io.IOException;
 
@@ -25,6 +26,25 @@ public class AuthFilter extends HttpFilter {
     if (userId == null) {
       res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
       return;
+    }
+
+    String token = (String) session.getAttribute("csrfToken");
+    if (token == null) {
+      res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      return;
+    }
+
+    if (!req.getMethod().equals(HttpMethod.GET)) {
+      // check the CSRF token
+      String userToken = req.getHeader("X-CSRF-TOKEN");
+      if (userToken == null) {
+        res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        return;
+      }
+      if (!token.equals(userToken)) {
+        res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        return;
+      }
     }
 
     req.setAttribute("userId", userId);

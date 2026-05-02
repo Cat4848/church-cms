@@ -18,6 +18,7 @@ import java.sql.SQLException;
 
 import static io.restassured.RestAssured.baseURI;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
 
 @DisplayName("Integration test suite for the LoginUseCase")
 public class LoginUseCaseIntegrationTest {
@@ -76,8 +77,13 @@ public class LoginUseCaseIntegrationTest {
 
     userRepository.save(seedUser);
 
-    System.out.println("server URI = " + baseURI);
-    given().body(loginUser).when().post("/auth/login").then().assertThat().statusCode(200);
-
+    given()
+            .body(loginUser)
+            .when()
+            .post("/auth/login")
+            .then()
+            .assertThat()
+            .statusCode(200)
+            .header("X-CSRF-TOKEN", not(emptyString()));
   }
 }

@@ -12,6 +12,7 @@ import utils.PasswordUtil;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class LoginUseCase {
   private final ObjectMapper objectMapper;
@@ -44,6 +45,12 @@ public class LoginUseCase {
     if (passwordUtil.checkPassword(attemptingUser.getPassword(), existingUser.getPassword())) {
       HttpSession newSession = req.getSession(true);
       newSession.setAttribute("userId", existingUser.getUserId());
+
+      // set the CSRF token
+      String token = UUID.randomUUID().toString();
+      newSession.setAttribute("csrfToken", token);
+
+      res.setHeader("X-CSRF-TOKEN", token);
       res.setStatus(HttpServletResponse.SC_OK);
     } else {
       throw new InvalidParameterException("Incorrect password");

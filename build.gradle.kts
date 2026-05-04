@@ -22,6 +22,8 @@ dependencies {
     implementation(platform("org.testcontainers:testcontainers-bom:1.21.4"))
     implementation("org.slf4j:slf4j-api:2.0.17")
     implementation("ch.qos.logback:logback-classic:1.5.32")
+    implementation("org.hibernate.validator:hibernate-validator:9.1.0.Final")
+    implementation("org.glassfish:jakarta.el:4.0.2")
 //    test
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("io.rest-assured:rest-assured:6.0.0")

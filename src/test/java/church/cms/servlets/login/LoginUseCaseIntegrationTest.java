@@ -67,8 +67,8 @@ public class LoginUseCaseIntegrationTest {
 
   @Test
   public void ifTheUserIsLoggedInSuccessfully() throws SQLException, InvalidEntityException {
-    User seedUser = new User("Head", "Lawrence", "j.lawrence@gmail.com", "pass123", false);
-    User loginUser = new User("Head", "Lawrence", "j.lawrence@gmail.com", "pass123", false);
+    User seedUser = new User("Head", "Lawrence", "j.lawrence@gmail.com", "pass12345", false);
+    LoginUserPayload loginPayload = new LoginUserPayload("j.lawrence@gmail.com", "pass12345");
 
     UserRepository userRepository = deps.getUserRepository();
     userRepository.createTableIfNotExists();
@@ -79,7 +79,7 @@ public class LoginUseCaseIntegrationTest {
     userRepository.save(seedUser);
 
     given()
-            .body(loginUser)
+            .body(loginPayload)
             .when()
             .post("/auth/login")
             .then()

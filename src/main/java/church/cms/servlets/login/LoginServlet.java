@@ -20,7 +20,6 @@ public class LoginServlet extends HttpServlet {
   protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
     logger.info("start");
 
-    // TODO validation on body
     try {
       AppDeps deps = (AppDeps) getServletContext().getAttribute("appDeps");
       if (deps == null) {

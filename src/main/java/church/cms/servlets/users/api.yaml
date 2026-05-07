@@ -1,0 +1,41 @@
+openapi: 3.0.4
+info:
+  title: Users API endpoints.
+  version: v1
+  description: Includes the CRUD API for users.
+
+paths:
+  /users:
+    get:
+      summary: Returns a list of users.
+      description: List of all users.
+      responses:
+        "200":
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                required:
+                  - firstName
+                  - lastName
+                  - email
+                properties:
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  email:
+                    type: email
+        "400": Bad request
+    post:
+      summary: Create a new user.
+      description: Endpoint for creating a new user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#components/schemas/User"
+      responses:
+        "200": Sends back the created

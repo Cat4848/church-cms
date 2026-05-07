@@ -1,6 +1,5 @@
 package church.cms.servlets.users;
 
-import church.cms.servlets.users.UsersServlet;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import church.cms.context.AppDeps;
@@ -68,15 +67,21 @@ public class CreateUserUseCaseIntegrationTest {
 
   @Test
   public void ifUserCreatedSuccessfully() throws NamingException, SQLException {
-    User user = new User("Head", "Lawrence", "j.lawrence@gmail.com", "pass123", true);
+    CreateUserPayload payload = new CreateUserPayload(
+            "Head",
+            "Lawrence",
+            "j.lawrence@gmail.com",
+            "pass12345",
+            true
+    );
 
     String firstName = given()
-            .body(user)
+            .body(payload)
             .when()
             .post("/api/users")
             .then().statusCode(201)
             .extract()
             .path("firstName");
-    assertEquals(user.getFirstName(), firstName);
+    assertEquals(payload.firstName(), firstName);
   }
 }

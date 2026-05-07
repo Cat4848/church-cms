@@ -32,15 +32,17 @@ public class LoginUseCaseUnitTest {
     HttpSession session = mock(HttpSession.class);
     when(req.getSession(true)).thenReturn(session);
 
-    User attemptingUser = new User("John", "Lawrence", "j.lawrence@gmail.com", "pass123", true);
+    User existingUser = new User(1, "John", "Lawrence", "j.lawrence@gmail.com", "pass12345", true);
+    LoginUserPayload loginPayload = new LoginUserPayload("j.lawrence@gmail.com", "pass12345");
+
     ObjectMapper objectMapper = mock(ObjectMapper.class);
-    when(objectMapper.readValue(req.getInputStream(), User.class)).thenReturn(attemptingUser);
+    when(objectMapper.readValue(req.getReader(), LoginUserPayload.class)).thenReturn(loginPayload);
 
     UserRepository userRepository = mock(UserRepository.class);
-    when(userRepository.retrieveByEmail(attemptingUser.getEmail())).thenReturn(attemptingUser);
+    when(userRepository.retrieveByEmail(existingUser.getEmail())).thenReturn(existingUser);
 
     PasswordUtil passwordUtil = mock(PasswordUtil.class);
-    when(passwordUtil.checkPassword(attemptingUser.getPassword(), attemptingUser.getPassword())).thenReturn(true);
+    when(passwordUtil.checkPassword(existingUser.getPassword(), loginPayload.password())).thenReturn(true);
 
     Logger logger = mock(Logger.class);
 

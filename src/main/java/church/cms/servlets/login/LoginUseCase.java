@@ -28,7 +28,6 @@ public class LoginUseCase {
     this.logger = logger;
   }
 
-  // TODO validation on body
   public void execute(HttpServletRequest req, HttpServletResponse res) throws IOException, InvalidEntityException, SQLException {
     logger.info("start");
 
@@ -39,17 +38,19 @@ public class LoginUseCase {
       return;
     }
 
-    User attemptingUser = objectMapper.readValue(req.getInputStream(), User.class);
+    LoginUserPayload loginAttempt = objectMapper.readValue(req.getReader(), LoginUserPayload.class);
 
-    logger.info("attemptingUserId {}", attemptingUser.getUserId());
+    logger.info("login attempt payload {}", loginAttempt);
 
-    if (attemptingUser.getEmail() == null && attemptingUser.getPassword() == null) {
-      throw new InvalidEntityException("User email or password missing");
+    if (loginAttempt.email() == null || loginAttempt.password() == null) {
+      logger.info("login validation failed; throwing IllegalArgumentException");
+
+      throw new IllegalArgumentException("User email or password missing");
     }
 
-    User existingUser = userRepository.retrieveByEmail(attemptingUser.getEmail());
+    User existingUser = userRepository.retrieveByEmail(loginAttempt.email());
 
-    if (passwordUtil.checkPassword(attemptingUser.getPassword(), existingUser.getPassword())) {
+    if (passwordUtil.checkPassword(loginAttempt.password(), existingUser.getPassword())) {
       logger.info("correct password: logging in");
 
       HttpSession newSession = req.getSession(true);

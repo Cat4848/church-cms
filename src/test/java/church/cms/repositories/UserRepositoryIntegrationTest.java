@@ -1,23 +1,21 @@
 package church.cms.repositories;
 
-import church.cms.repositories.Repository;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import church.cms.context.AppDeps;
 import church.cms.domain.User;
 import church.cms.exceptions.InvalidEntityException;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.MySQLContainer;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-
 import java.sql.SQLException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Test suite for the UserRepository")
 public class UserRepositoryIntegrationTest {

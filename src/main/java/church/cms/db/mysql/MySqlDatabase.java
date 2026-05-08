@@ -25,6 +25,7 @@ public class MySqlDatabase implements SqlDatabase {
    * please use the {@code executeUpdate()} method provided by the {@code SqlDatabase} interface.
    *
    * @param sql String The SQL query string.
+   *
    * @return {@code ResultSet} The iterator from the database.
    */
   public ResultSet executeQuery(String sql, List<Object> params) throws SQLException {
@@ -41,12 +42,13 @@ public class MySqlDatabase implements SqlDatabase {
    * please use the {@code executeSelect()} method provided by the {@code SqlDatabase} interface.
    *
    * @param sql String The SQL query string.
+   *
    * @return {@code ResultSet} The iterator from the database that contains the generated IDs.
    *
    */
   public ResultSet executeUpdate(String sql, List<Object> params) throws SQLException {
-    try(Connection conn = dataSource.getConnection();
-    PreparedStatement stm = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+    try (Connection conn = dataSource.getConnection();
+         PreparedStatement stm = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
       int paramsSize = params.size();
       for (int i = 0; i < paramsSize; i++) {
         stm.setObject(i + 1, params.get(i));
@@ -67,6 +69,8 @@ public class MySqlDatabase implements SqlDatabase {
   }
 
   public void closeConnection() throws SQLException {
-    if (connection != null) connection.close();
+    if (connection != null) {
+      connection.close();
+    }
   }
 }

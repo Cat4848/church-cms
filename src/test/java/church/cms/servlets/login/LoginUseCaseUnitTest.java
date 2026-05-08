@@ -1,25 +1,21 @@
 package church.cms.servlets.login;
 
-import church.cms.servlets.login.LoginUseCase;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import church.cms.domain.User;
 import church.cms.exceptions.InvalidEntityException;
+import church.cms.repositories.UserRepository;
+import church.cms.utils.PasswordUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import church.cms.repositories.UserRepository;
-import church.cms.utils.PasswordUtil;
 import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.*;
 
 @DisplayName("Unit test suite for the LoginUseCase")
 public class LoginUseCaseUnitTest {

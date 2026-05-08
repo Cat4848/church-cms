@@ -1,22 +1,20 @@
 package church.cms.servlets.users;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import church.cms.context.AppDeps;
 import church.cms.domain.User;
 import church.cms.exceptions.InvalidEntityException;
+import church.cms.repositories.Repository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.sql.SQLException;
-
-import church.cms.repositories.Repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.naming.NamingException;
+import java.io.IOException;
+import java.sql.SQLException;
 
 @WebServlet("/api/users/*")
 public class UsersServlet extends HttpServlet {

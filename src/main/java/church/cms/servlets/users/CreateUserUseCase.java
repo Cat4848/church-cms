@@ -1,12 +1,12 @@
 package church.cms.servlets.users;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import church.cms.domain.User;
 import church.cms.exceptions.InvalidEntityException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import church.cms.repositories.Repository;
 import church.cms.utils.PasswordUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -23,14 +23,21 @@ public class CreateUserUseCase {
   private final Repository<User> userRepository;
   private final Logger logger;
 
-  public CreateUserUseCase(ObjectMapper objectMapper, PasswordUtil passwordUtil, Repository<User> userRepository, Logger logger) {
+  public CreateUserUseCase(
+          ObjectMapper objectMapper,
+          PasswordUtil passwordUtil,
+          Repository<User> userRepository,
+          Logger logger) {
     this.objectMapper = objectMapper;
     this.passwordUtil = passwordUtil;
     this.userRepository = userRepository;
     this.logger = logger;
   }
 
-  public void execute(HttpServletRequest req, HttpServletResponse res) throws IOException, InvalidEntityException, SQLException {
+  public void execute(HttpServletRequest req, HttpServletResponse res) throws
+          IOException,
+          InvalidEntityException,
+          SQLException {
     logger.info("start");
 
     CreateUserPayload payload = objectMapper.readValue(req.getReader(), CreateUserPayload.class);

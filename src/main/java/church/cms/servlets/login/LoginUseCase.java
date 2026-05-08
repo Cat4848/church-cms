@@ -1,13 +1,13 @@
 package church.cms.servlets.login;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import church.cms.domain.User;
 import church.cms.exceptions.InvalidEntityException;
+import church.cms.repositories.UserRepository;
+import church.cms.utils.PasswordUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import church.cms.repositories.UserRepository;
-import church.cms.utils.PasswordUtil;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -21,14 +21,21 @@ public class LoginUseCase {
   private final UserRepository userRepository;
   private final Logger logger;
 
-  public LoginUseCase(ObjectMapper objectMapper, PasswordUtil passwordUtil, UserRepository userRepository, Logger logger) {
+  public LoginUseCase(
+          ObjectMapper objectMapper,
+          PasswordUtil passwordUtil,
+          UserRepository userRepository,
+          Logger logger) {
     this.objectMapper = objectMapper;
     this.passwordUtil = passwordUtil;
     this.userRepository = userRepository;
     this.logger = logger;
   }
 
-  public void execute(HttpServletRequest req, HttpServletResponse res) throws IOException, InvalidEntityException, SQLException {
+  public void execute(HttpServletRequest req, HttpServletResponse res) throws
+          IOException,
+          InvalidEntityException,
+          SQLException {
     logger.info("start");
 
     HttpSession session = req.getSession(false);

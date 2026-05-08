@@ -1,23 +1,23 @@
 package church.cms.servlets.users;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import church.cms.context.AppDeps;
 import church.cms.domain.User;
+import church.cms.repositories.Repository;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import org.apache.catalina.Context;
+import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
 import org.junit.jupiter.api.*;
 import org.testcontainers.containers.MySQLContainer;
-import church.cms.repositories.Repository;
 
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
-import org.apache.catalina.Context;
-import org.apache.catalina.LifecycleException;
-
-import static io.restassured.RestAssured.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static io.restassured.RestAssured.baseURI;
+import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Integration Test suite for Create User Use Case")
 public class CreateUserUseCaseIntegrationTest {

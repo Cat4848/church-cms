@@ -1,11 +1,11 @@
 package church.cms.context;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.LoggerFactory;
 import church.cms.repositories.UserRepository;
 import church.cms.servlets.login.LoginUseCase;
 import church.cms.servlets.users.CreateUserUseCase;
 import church.cms.utils.PasswordUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -21,8 +21,14 @@ public class AppDeps {
     this.userRepository = new UserRepository(dataSource, LoggerFactory.getLogger(UserRepository.class));
     this.objectMapper = new ObjectMapper();
     this.passwordUtil = new PasswordUtil();
-    this.createUserUseCase = new CreateUserUseCase(objectMapper, passwordUtil, userRepository, LoggerFactory.getLogger(CreateUserUseCase.class));
-    this.loginUseCase = new LoginUseCase(objectMapper, passwordUtil, userRepository, LoggerFactory.getLogger(LoginUseCase.class));
+    this.createUserUseCase = new CreateUserUseCase(objectMapper,
+                                                   passwordUtil,
+                                                   userRepository,
+                                                   LoggerFactory.getLogger(CreateUserUseCase.class));
+    this.loginUseCase = new LoginUseCase(objectMapper,
+                                         passwordUtil,
+                                         userRepository,
+                                         LoggerFactory.getLogger(LoginUseCase.class));
   }
 
   public UserRepository getUserRepository() {

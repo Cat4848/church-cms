@@ -1,25 +1,25 @@
 package church.cms.servlets.login;
 
-import church.cms.servlets.login.LoginServlet;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import church.cms.context.AppDeps;
 import church.cms.domain.User;
 import church.cms.exceptions.InvalidEntityException;
-import org.apache.catalina.Context;
-import org.apache.catalina.startup.Tomcat;
-import org.apache.catalina.LifecycleException;
-import org.junit.jupiter.api.*;
-import org.testcontainers.containers.MySQLContainer;
 import church.cms.repositories.UserRepository;
 import church.cms.utils.PasswordUtil;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import org.apache.catalina.Context;
+import org.apache.catalina.LifecycleException;
+import org.apache.catalina.startup.Tomcat;
+import org.junit.jupiter.api.*;
+import org.testcontainers.containers.MySQLContainer;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
 import static io.restassured.RestAssured.baseURI;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.not;
 
 @DisplayName("Integration test suite for the LoginUseCase")
 public class LoginUseCaseIntegrationTest {

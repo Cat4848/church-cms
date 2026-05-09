@@ -2,6 +2,7 @@ package church.cms.context;
 
 import church.cms.repositories.AuthorRepository;
 import church.cms.repositories.UserRepository;
+import church.cms.servlets.authors.CreateAuthorUseCase;
 import church.cms.servlets.login.LoginUseCase;
 import church.cms.servlets.users.CreateUserUseCase;
 import church.cms.utils.PasswordUtil;
@@ -18,6 +19,7 @@ public class AppDeps {
   private final ObjectMapper objectMapper;
   private final PasswordUtil passwordUtil;
   private final LoginUseCase loginUseCase;
+  private final CreateAuthorUseCase createAuthorUseCase;
 
   public AppDeps(DataSource dataSource) throws SQLException {
     this.userRepository = new UserRepository(dataSource, LoggerFactory.getLogger(UserRepository.class));
@@ -32,6 +34,8 @@ public class AppDeps {
                                          passwordUtil,
                                          userRepository,
                                          LoggerFactory.getLogger(LoginUseCase.class));
+    this.createAuthorUseCase = new CreateAuthorUseCase(objectMapper, authorRepository, LoggerFactory.getLogger(
+            CreateAuthorUseCase.class));
   }
 
   public UserRepository getUserRepository() {
@@ -56,5 +60,9 @@ public class AppDeps {
 
   public LoginUseCase getLoginUseCase() {
     return loginUseCase;
+  }
+
+  public CreateAuthorUseCase getCreateAuthorUseCase() {
+    return createAuthorUseCase;
   }
 }

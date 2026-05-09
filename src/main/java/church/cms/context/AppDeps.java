@@ -3,6 +3,7 @@ package church.cms.context;
 import church.cms.repositories.AuthorRepository;
 import church.cms.repositories.UserRepository;
 import church.cms.servlets.authors.CreateAuthorUseCase;
+import church.cms.servlets.authors.ListAuthorsUseCase;
 import church.cms.servlets.login.LoginUseCase;
 import church.cms.servlets.users.CreateUserUseCase;
 import church.cms.utils.PasswordUtil;
@@ -20,6 +21,7 @@ public class AppDeps {
   private final PasswordUtil passwordUtil;
   private final LoginUseCase loginUseCase;
   private final CreateAuthorUseCase createAuthorUseCase;
+  private final ListAuthorsUseCase listAuthorsUseCase;
 
   public AppDeps(DataSource dataSource) throws SQLException {
     this.userRepository = new UserRepository(dataSource, LoggerFactory.getLogger(UserRepository.class));
@@ -36,6 +38,8 @@ public class AppDeps {
                                          LoggerFactory.getLogger(LoginUseCase.class));
     this.createAuthorUseCase = new CreateAuthorUseCase(objectMapper, authorRepository, LoggerFactory.getLogger(
             CreateAuthorUseCase.class));
+    this.listAuthorsUseCase = new ListAuthorsUseCase(objectMapper, authorRepository, LoggerFactory.getLogger(
+            ListAuthorsUseCase.class));
   }
 
   public UserRepository getUserRepository() {
@@ -64,5 +68,9 @@ public class AppDeps {
 
   public CreateAuthorUseCase getCreateAuthorUseCase() {
     return createAuthorUseCase;
+  }
+
+  public ListAuthorsUseCase getListAuthorsUseCase() {
+    return listAuthorsUseCase;
   }
 }

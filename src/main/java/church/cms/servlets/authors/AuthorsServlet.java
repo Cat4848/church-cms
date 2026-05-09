@@ -46,6 +46,22 @@ public class AuthorsServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
     logger.info("GET authors endpoint: start");
+
+    try {
+      AppDeps deps = (AppDeps) getServletContext().getAttribute("appDeps");
+      if (deps == null) {
+        throw new IllegalStateException("The appDeps dependency doesn't exist in he authors doGet servlet");
+      }
+
+      deps.getListAuthorsUseCase().execute(req, res);
+
+    } catch (IOException | SQLException e) {
+      res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      res.getWriter().write(e.getMessage());
+
+      logger.error("POST list authors endpoint: internal server error", e);
+    }
+
     logger.info("GET authors endpoint: end");
   }
 

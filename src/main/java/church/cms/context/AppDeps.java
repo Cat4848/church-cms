@@ -1,5 +1,6 @@
 package church.cms.context;
 
+import church.cms.repositories.AuthorRepository;
 import church.cms.repositories.UserRepository;
 import church.cms.servlets.login.LoginUseCase;
 import church.cms.servlets.users.CreateUserUseCase;
@@ -12,6 +13,7 @@ import java.sql.SQLException;
 
 public class AppDeps {
   private final UserRepository userRepository;
+  private final AuthorRepository authorRepository;
   private final CreateUserUseCase createUserUseCase;
   private final ObjectMapper objectMapper;
   private final PasswordUtil passwordUtil;
@@ -19,6 +21,7 @@ public class AppDeps {
 
   public AppDeps(DataSource dataSource) throws SQLException {
     this.userRepository = new UserRepository(dataSource, LoggerFactory.getLogger(UserRepository.class));
+    this.authorRepository = new AuthorRepository(dataSource, LoggerFactory.getLogger(AuthorRepository.class));
     this.objectMapper = new ObjectMapper();
     this.passwordUtil = new PasswordUtil();
     this.createUserUseCase = new CreateUserUseCase(objectMapper,
@@ -33,6 +36,10 @@ public class AppDeps {
 
   public UserRepository getUserRepository() {
     return userRepository;
+  }
+
+  public AuthorRepository getAuthorRepository() {
+    return authorRepository;
   }
 
   public CreateUserUseCase getCreateUserUseCase() {

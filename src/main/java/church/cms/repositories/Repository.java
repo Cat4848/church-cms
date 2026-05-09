@@ -7,13 +7,13 @@ import javax.naming.NamingException;
 import java.sql.SQLException;
 
 public interface Repository<T> {
-  User save(T entity) throws SQLException, InvalidEntityException;
+  T save(T entity) throws SQLException;
 
-  T retrieve(Integer id) throws NamingException, SQLException, InvalidEntityException;
+  T retrieve(Integer id) throws SQLException, InvalidEntityException;
 
-  void delete(Integer id) throws NamingException, SQLException, InvalidEntityException;
+  void delete(Integer id) throws SQLException, InvalidEntityException;
 
-  boolean exists(Integer id) throws NamingException, SQLException;
+  boolean exists(Integer id) throws SQLException;
 
   void createTableIfNotExists() throws SQLException;
 }

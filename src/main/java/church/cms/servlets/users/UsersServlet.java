@@ -51,7 +51,7 @@ public class UsersServlet extends HttpServlet {
       }
 
       logger.info("GET users: end");
-    } catch (SQLException | InvalidEntityException | NamingException e) {
+    } catch (SQLException | InvalidEntityException e) {
       res.setContentType("text/plain");
       res.setStatus(500);
       res.getWriter().write("we have an error on GET users route" + e.getMessage());

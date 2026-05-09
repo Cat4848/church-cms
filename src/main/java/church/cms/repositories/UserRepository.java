@@ -18,7 +18,7 @@ public class UserRepository implements Repository<User> {
   }
 
   @Override
-  public User save(User user) throws SQLException, InvalidEntityException {
+  public User save(User user) throws SQLException {
     logger.info("save user: start: userId: {}", user.getUserId());
 
     String sql;
@@ -36,12 +36,10 @@ public class UserRepository implements Repository<User> {
               user.getIsRetired()
       );
     } else {
-      User existingUser = retrieve(user.getUserId());
       sql = "UPDATE users SET " +
               "first_name = ?, " +
               "last_name = ?, " +
               "email = ?, " +
-              "password = ?, " +
               "is_admin = ?, " +
               "is_retired = ? " +
               "WHERE user_id = ?;";
@@ -49,7 +47,6 @@ public class UserRepository implements Repository<User> {
               user.getFirstName(),
               user.getLastName(),
               user.getEmail(),
-              existingUser.getPassword(),
               user.getIsAdmin(),
               user.getIsRetired(),
               user.getUserId()

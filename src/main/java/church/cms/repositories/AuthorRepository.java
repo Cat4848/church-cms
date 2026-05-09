@@ -18,6 +18,12 @@ public class AuthorRepository implements Repository<Author> {
     this.logger = logger;
   }
 
+
+  @Override
+  public List<Author> list(){
+    return new ArrayList<>();
+  }
+
   @Override
   public Author save(Author author) throws SQLException {
     logger.info("save author: start: authorId: {}", author.getAuthorId());

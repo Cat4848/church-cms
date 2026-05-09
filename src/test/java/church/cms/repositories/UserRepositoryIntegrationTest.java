@@ -14,6 +14,7 @@ import org.testcontainers.containers.MySQLContainer;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,7 +45,19 @@ public class UserRepositoryIntegrationTest {
   }
 
   @Test
-  void ifRetrievesUser() throws NamingException, SQLException, InvalidEntityException {
+  void ifListsUsers() throws SQLException {
+    User newUser1 = new User("John", "Long", "j.long@gmail.com", "passwd", false);
+    User newUser2 = new User("Mike", "Short", "m.short@gmail.com", "passwd", true);
+    userRepository.save(newUser1);
+    userRepository.save(newUser2);
+
+    List<User> users = userRepository.list();
+
+    assertEquals(2, users.size());
+  }
+
+  @Test
+  void ifRetrievesUser() throws SQLException, InvalidEntityException {
     User newUser = new User("John", "Long", "j.long@gmail.com", "passwd", false);
 
     User createdUser = userRepository.save(newUser);

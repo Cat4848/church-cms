@@ -2,6 +2,7 @@ package church.cms.servlets.authors;
 
 import church.cms.domain.Author;
 import church.cms.repositories.AuthorRepository;
+import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,13 +17,14 @@ public class ListAuthorsUseCase {
   private final AuthorRepository authorRepository;
   private final Logger logger;
 
-  public ListAuthorsUseCase(ObjectMapper objectMapper, AuthorRepository authorRepository, Logger logger){
+  public ListAuthorsUseCase(ObjectMapper objectMapper, AuthorRepository authorRepository, Logger logger) {
     this.objectMapper = objectMapper;
     this.authorRepository = authorRepository;
     this.logger = logger;
   }
 
-  public void execute(HttpServletRequest req, HttpServletResponse res) throws SQLException, IOException {
+  public void execute(HttpServletRequest req, HttpServletResponse res) throws SQLException, IOException,
+          StreamWriteException {
     logger.info("start");
 
     List<Author> authors = authorRepository.list();

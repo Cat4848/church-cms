@@ -3,6 +3,7 @@ package church.cms.servlets.authors;
 import church.cms.domain.Author;
 import church.cms.repositories.AuthorRepository;
 import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,6 +34,7 @@ public class CreateAuthorUseCase {
           SQLException,
           IllegalArgumentException,
           StreamReadException,
+          StreamWriteException,
           DatabindException {
     logger.info("start");
 

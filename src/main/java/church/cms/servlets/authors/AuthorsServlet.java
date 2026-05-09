@@ -2,6 +2,7 @@ package church.cms.servlets.authors;
 
 import church.cms.context.AppDeps;
 import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.databind.DatabindException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -30,12 +31,12 @@ public class AuthorsServlet extends HttpServlet {
       deps.getCreateAuthorUseCase().execute(req, res);
 
       logger.info("POST create author endpoint: end");
-    } catch (IllegalArgumentException | DatabindException e) {
+    } catch (IllegalArgumentException | DatabindException | StreamReadException e) {
       res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       res.getWriter().write(e.getMessage());
 
       logger.error("POST create author endpoint: bad request error", e);
-    } catch (SQLException | IllegalStateException | StreamReadException e) {
+    } catch (SQLException | IllegalStateException | StreamWriteException e) {
       res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       res.getWriter().write(e.getMessage());
 
@@ -77,18 +78,23 @@ public class AuthorsServlet extends HttpServlet {
 
       deps.getUpdateAuthorUseCase().execute(req, res);
 
-    } catch (IOException | SQLException e) {
-      res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    } catch (IllegalArgumentException | DatabindException | StreamReadException e) {
+      res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       res.getWriter().write(e.getMessage());
+
+      logger.error("PUT update author endpoint: bad request error", e);
+    } catch (SQLException | IllegalStateException | StreamWriteException e) {
+      res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      res.getWriter().write(e.getMessage() + "my message");
 
       logger.error("PUT update author endpoint: internal server error", e);
     }
-    logger.info("PUT update author: end");
   }
 
   @Override
   protected void doDelete(HttpServletRequest req, HttpServletResponse res) throws IOException {
     logger.info("DELETE delete author: start");
+
     logger.info("DELETE delete author: end");
   }
 }

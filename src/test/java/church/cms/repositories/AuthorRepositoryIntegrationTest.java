@@ -14,6 +14,7 @@ import org.testcontainers.containers.MySQLContainer;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,6 +42,20 @@ public class AuthorRepositoryIntegrationTest {
   @AfterAll
   public static void afterAll() {
     dbContainer.stop();
+  }
+
+  @Test
+  void ifListsAuthors() throws SQLException {
+    authorRepository.truncateTable();
+
+    Author newAuthor1 = new Author("John Newton");
+    Author newAuthor2 = new Author("Brian Green");
+    authorRepository.save(newAuthor1);
+    authorRepository.save(newAuthor2);
+
+    List<Author> authors = authorRepository.list();
+
+    assertEquals(2, authors.size());
   }
 
   @Test

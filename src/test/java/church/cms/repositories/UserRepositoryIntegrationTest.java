@@ -46,6 +46,8 @@ public class UserRepositoryIntegrationTest {
 
   @Test
   void ifListsUsers() throws SQLException {
+    userRepository.truncateTable();
+
     User newUser1 = new User("John", "Long", "j.long@gmail.com", "passwd", false);
     User newUser2 = new User("Mike", "Short", "m.short@gmail.com", "passwd", true);
     userRepository.save(newUser1);

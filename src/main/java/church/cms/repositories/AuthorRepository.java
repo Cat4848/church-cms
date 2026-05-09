@@ -18,10 +18,28 @@ public class AuthorRepository implements Repository<Author> {
     this.logger = logger;
   }
 
-
   @Override
-  public List<Author> list(){
-    return new ArrayList<>();
+  public List<Author> list() throws SQLException {
+    logger.info("list authors: start");
+
+    String sql = "SELECT * FROM authors;";
+
+    List<Author> authors = new ArrayList<>();
+
+    try (Connection conn = dataSource.getConnection();
+         PreparedStatement stm = conn.prepareStatement(sql)) {
+      try (ResultSet rs = stm.executeQuery()) {
+        while (rs.next()) {
+          Integer authorId = rs.getInt("author_id");
+          String name = rs.getString("name");
+          authors.add(new Author(authorId, name));
+        }
+      }
+    }
+
+    logger.info("list authors: end");
+
+    return authors;
   }
 
   @Override
@@ -137,4 +155,17 @@ public class AuthorRepository implements Repository<Author> {
     logger.info("createTableIfNotExists author: end");
   }
 
+  @Override
+  public void truncateTable() throws SQLException {
+    logger.info("truncate table: start");
+
+    String sql = "TRUNCATE TABLE authors;";
+
+    try (Connection conn = dataSource.getConnection();
+         PreparedStatement stm = conn.prepareStatement(sql)) {
+      stm.executeUpdate();
+    }
+
+    logger.info("truncate table: end");
+  }
 }

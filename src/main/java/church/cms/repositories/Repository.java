@@ -17,4 +17,6 @@ public interface Repository<T> {
   boolean exists(Integer id) throws SQLException;
 
   void createTableIfNotExists() throws SQLException;
+
+  void truncateTable() throws SQLException;
 }

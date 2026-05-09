@@ -218,4 +218,19 @@ public class UserRepository implements Repository<User> {
     }
     logger.info("createTableIfNotExists user: end");
   }
+
+  @Override
+  public void truncateTable() throws SQLException {
+    logger.info("truncate table: start");
+
+    String sql = "TRUNCATE TABLE users;";
+
+    try (Connection conn = dataSource.getConnection();
+         PreparedStatement stm = conn.prepareStatement(sql)) {
+      stm.executeUpdate();
+    }
+
+    logger.info("truncate table: end");
+  }
+
 }

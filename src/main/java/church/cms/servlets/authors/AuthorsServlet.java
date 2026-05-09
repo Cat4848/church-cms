@@ -68,6 +68,21 @@ public class AuthorsServlet extends HttpServlet {
   @Override
   protected void doPut(HttpServletRequest req, HttpServletResponse res) throws IOException {
     logger.info("PUT update author: start");
+
+    try {
+      AppDeps deps = (AppDeps) getServletContext().getAttribute("appDeps");
+      if (deps == null) {
+        throw new IllegalStateException("The appDeps dependency doesn't exist in he authors doGet servlet");
+      }
+
+      deps.getUpdateAuthorUseCase().execute(req, res);
+
+    } catch (IOException | SQLException e) {
+      res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      res.getWriter().write(e.getMessage());
+
+      logger.error("PUT update author endpoint: internal server error", e);
+    }
     logger.info("PUT update author: end");
   }
 

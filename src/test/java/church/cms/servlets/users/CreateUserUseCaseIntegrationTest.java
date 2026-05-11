@@ -66,7 +66,7 @@ public class CreateUserUseCaseIntegrationTest {
   }
 
   @Test
-  public void ifUserCreatedSuccessfully() throws NamingException, SQLException {
+  public void ifUserCreatedSuccessfully() {
     CreateUserPayload payload = new CreateUserPayload(
             "Head",
             "Lawrence",

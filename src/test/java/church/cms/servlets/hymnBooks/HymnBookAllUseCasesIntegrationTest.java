@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.hasItems;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Integration Test suite for all Hymn Book Use Cases")
-public class HymnBookUseCasesIntegrationTest {
+public class HymnBookAllUseCasesIntegrationTest {
   public static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:9.0");
   public static HymnBookRepository hymnBookRepository;
   public static Tomcat tomcat;

@@ -11,7 +11,6 @@ import org.apache.catalina.startup.Tomcat;
 import org.junit.jupiter.api.*;
 import org.testcontainers.containers.MySQLContainer;
 
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
@@ -19,7 +18,7 @@ import static io.restassured.RestAssured.baseURI;
 import static io.restassured.RestAssured.get;
 import static org.hamcrest.Matchers.hasItems;
 
-@DisplayName("Integration Test suite for Create Author Use Case")
+@DisplayName("Integration Test suite for List Authors Use Case")
 public class ListAuthorsUseCaseIntegrationTest {
   public static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:9.0");
   public static Tomcat tomcat;

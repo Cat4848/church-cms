@@ -3,6 +3,7 @@ package church.cms.context;
 import church.cms.repositories.AuthorRepository;
 import church.cms.repositories.UserRepository;
 import church.cms.servlets.authors.CreateAuthorUseCase;
+import church.cms.servlets.authors.DeleteAuthorUseCase;
 import church.cms.servlets.authors.ListAuthorsUseCase;
 import church.cms.servlets.authors.UpdateAuthorUseCase;
 import church.cms.servlets.login.LoginUseCase;
@@ -24,6 +25,7 @@ public class AppDeps {
   private final CreateAuthorUseCase createAuthorUseCase;
   private final ListAuthorsUseCase listAuthorsUseCase;
   private final UpdateAuthorUseCase updateAuthorUseCase;
+  private final DeleteAuthorUseCase deleteAuthorUseCase;
 
   public AppDeps(DataSource dataSource) throws SQLException {
     this.userRepository = new UserRepository(dataSource, LoggerFactory.getLogger(UserRepository.class));
@@ -44,6 +46,8 @@ public class AppDeps {
             ListAuthorsUseCase.class));
     this.updateAuthorUseCase = new UpdateAuthorUseCase(objectMapper, authorRepository, LoggerFactory.getLogger(
             UpdateAuthorUseCase.class));
+    this.deleteAuthorUseCase = new DeleteAuthorUseCase(authorRepository,
+                                                       LoggerFactory.getLogger(DeleteAuthorUseCase.class));
   }
 
   public UserRepository getUserRepository() {
@@ -80,5 +84,9 @@ public class AppDeps {
 
   public UpdateAuthorUseCase getUpdateAuthorUseCase() {
     return updateAuthorUseCase;
+  }
+
+  public DeleteAuthorUseCase getDeleteAuthorUseCase() {
+    return deleteAuthorUseCase;
   }
 }

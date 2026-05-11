@@ -65,7 +65,7 @@ public class CreateAuthorUseCaseIntegrationTest {
   }
 
   @Test
-  public void ifAuthorCreatedSuccessfully() throws NamingException, SQLException {
+  public void ifAuthorCreatedSuccessfully() {
     CreateAuthorPayload payload = new CreateAuthorPayload("John Newton");
 
     String name = given()

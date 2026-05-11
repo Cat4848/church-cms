@@ -16,10 +16,9 @@ import java.sql.SQLException;
 
 import static io.restassured.RestAssured.baseURI;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
 
-@DisplayName("Integration Test suite for Update Author Use Case")
-public class UpdateAuthorUseCaseIntegrationTest {
+@DisplayName("Integration Test suite for Delete Author Use Case")
+public class DeleteAuthorUseCaseIntegrationTest {
   public static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:9.0");
   public static Tomcat tomcat;
   public static int port;
@@ -51,7 +50,7 @@ public class UpdateAuthorUseCaseIntegrationTest {
     context.getServletContext().setAttribute("appDeps", appDeps);
 
     Tomcat.addServlet(context, "authorsServlet", new AuthorsServlet());
-    context.addServletMappingDecoded("/api/authors", "authorsServlet");
+    context.addServletMappingDecoded("/api/authors/*", "authorsServlet");
 
     tomcat.start();
     port = tomcat.getConnector().getLocalPort();
@@ -69,18 +68,12 @@ public class UpdateAuthorUseCaseIntegrationTest {
   }
 
   @Test
-  public void ifAuthorUpdatedSuccessfully() {
-    UpdateAuthorPayload payload = new UpdateAuthorPayload(createdAuthor.getAuthorId(), "William Knox");
-
+  public void ifAuthorDeletedSuccessfully() {
     given()
-            .body(payload)
             .when()
-            .put("/api/authors")
+            .delete("/api/authors/" + createdAuthor.getAuthorId())
             .then()
             .assertThat()
-            .statusCode(200)
-            .body("authorId", equalTo(createdAuthor.getAuthorId()))
-            .and()
-            .body("name", equalTo(payload.name()));
+            .statusCode(200);
   }
 }

@@ -95,6 +95,26 @@ public class AuthorsServlet extends HttpServlet {
   protected void doDelete(HttpServletRequest req, HttpServletResponse res) throws IOException {
     logger.info("DELETE delete author: start");
 
+    try {
+      AppDeps deps = (AppDeps) getServletContext().getAttribute("appDeps");
+      if (deps == null) {
+        throw new IllegalStateException("The appDeps dependency doesn't exist in he authors doGet servlet");
+      }
+
+      deps.getDeleteAuthorUseCase().execute(req, res);
+
+    } catch (IllegalArgumentException e) {
+      res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      res.getWriter().write(e.getMessage());
+
+      logger.error("DELETE delete author endpoint: bad request error", e);
+    } catch(IllegalStateException | SQLException e) {
+      res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      res.getWriter().write(e.getMessage());
+
+      logger.error("DELETE delete author endpoint: internal server error",e);
+    }
+
     logger.info("DELETE delete author: end");
   }
 }

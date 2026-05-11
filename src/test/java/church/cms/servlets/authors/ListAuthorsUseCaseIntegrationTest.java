@@ -69,7 +69,7 @@ public class ListAuthorsUseCaseIntegrationTest {
   }
 
   @Test
-  public void ifAuthorCreatedSuccessfully() {
+  public void ifListsAuthorsSuccessfully() {
     get("/api/authors")
             .then()
             .assertThat()

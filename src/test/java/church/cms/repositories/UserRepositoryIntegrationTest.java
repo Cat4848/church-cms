@@ -14,6 +14,7 @@ import org.testcontainers.containers.MySQLContainer;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,7 +45,21 @@ public class UserRepositoryIntegrationTest {
   }
 
   @Test
-  void ifRetrievesUser() throws NamingException, SQLException, InvalidEntityException {
+  void ifListsUsers() throws SQLException {
+    userRepository.truncateTable();
+
+    User newUser1 = new User("John", "Long", "j.long@gmail.com", "passwd", false);
+    User newUser2 = new User("Mike", "Short", "m.short@gmail.com", "passwd", true);
+    userRepository.save(newUser1);
+    userRepository.save(newUser2);
+
+    List<User> users = userRepository.list();
+
+    assertEquals(2, users.size());
+  }
+
+  @Test
+  void ifRetrievesUser() throws SQLException, InvalidEntityException {
     User newUser = new User("John", "Long", "j.long@gmail.com", "passwd", false);
 
     User createdUser = userRepository.save(newUser);
@@ -66,12 +81,12 @@ public class UserRepositoryIntegrationTest {
   }
 
   @Test
-  void ifItThrowsErrorWhenUserNotFound() throws InvalidEntityException {
+  void ifItThrowsErrorWhenUserNotFound() {
     assertThrows(InvalidEntityException.class, () -> userRepository.retrieve(2));
   }
 
   @Test
-  void ifItCreatesUser() throws NamingException, SQLException, InvalidEntityException {
+  void ifItCreatesUser() throws SQLException {
     User newUser = new User("John", "Long", "j.long@gmail.com", "passwd", false);
     User createdUser = userRepository.save(newUser);
     assertNotNull(createdUser.getUserId());
@@ -82,7 +97,7 @@ public class UserRepositoryIntegrationTest {
   }
 
   @Test
-  void ifItUpdatesUser() throws NamingException, SQLException, InvalidEntityException {
+  void ifItUpdatesUser() throws SQLException {
     User newUser = new User("John", "Long", "j.long@gmail.com", "passwd", false);
     String newFirstName = "Roger";
 
@@ -94,7 +109,7 @@ public class UserRepositoryIntegrationTest {
   }
 
   @Test
-  void ifReturnsTrueWhenUserExists() throws NamingException, SQLException, InvalidEntityException {
+  void ifReturnsTrueWhenUserExists() throws SQLException {
     User newUser = new User("John", "Long", "j.long@gmail.com", "passwd", false);
     User createdUser = userRepository.save(newUser);
     boolean isUser = userRepository.exists(createdUser.getUserId());
@@ -102,7 +117,7 @@ public class UserRepositoryIntegrationTest {
   }
 
   @Test
-  void ifItReturnsFalseWhenUserDoesNotExist() throws SQLException, NamingException {
+  void ifItReturnsFalseWhenUserDoesNotExist() throws SQLException {
     boolean isUser = userRepository.exists(7);
     assertFalse(isUser);
   }

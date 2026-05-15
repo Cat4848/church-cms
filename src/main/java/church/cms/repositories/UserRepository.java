@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserRepository implements Repository<User> {
@@ -18,7 +19,37 @@ public class UserRepository implements Repository<User> {
   }
 
   @Override
-  public User save(User user) throws SQLException, InvalidEntityException {
+  public List<User> list() throws SQLException {
+    logger.info("list users: start");
+
+    String sql = "SELECT * FROM users;";
+
+    List<User> users = new ArrayList<>();
+
+    try (Connection conn = dataSource.getConnection();
+         PreparedStatement stm = conn.prepareStatement(sql)) {
+      try (ResultSet rs = stm.executeQuery()) {
+        while (rs.next()) {
+          Integer userId = rs.getInt("user_id");
+          String firstName = rs.getString("first_name");
+          String lastName = rs.getString("last_name");
+          String email = rs.getString("email");
+          Boolean isAdmin = rs.getBoolean("is_admin");
+          Boolean isRetired = rs.getBoolean("is_retired");
+
+          User user = new User(userId, firstName, lastName, email, null, isAdmin, isRetired);
+          users.add(user);
+        }
+      }
+    }
+
+    logger.info("list users: end");
+
+    return users;
+  }
+
+  @Override
+  public User save(User user) throws SQLException {
     logger.info("save user: start: userId: {}", user.getUserId());
 
     String sql;
@@ -36,12 +67,10 @@ public class UserRepository implements Repository<User> {
               user.getIsRetired()
       );
     } else {
-      User existingUser = retrieve(user.getUserId());
       sql = "UPDATE users SET " +
               "first_name = ?, " +
               "last_name = ?, " +
               "email = ?, " +
-              "password = ?, " +
               "is_admin = ?, " +
               "is_retired = ? " +
               "WHERE user_id = ?;";
@@ -49,7 +78,6 @@ public class UserRepository implements Repository<User> {
               user.getFirstName(),
               user.getLastName(),
               user.getEmail(),
-              existingUser.getPassword(),
               user.getIsAdmin(),
               user.getIsRetired(),
               user.getUserId()
@@ -190,4 +218,19 @@ public class UserRepository implements Repository<User> {
     }
     logger.info("createTableIfNotExists user: end");
   }
+
+  @Override
+  public void truncateTable() throws SQLException {
+    logger.info("truncate table: start");
+
+    String sql = "TRUNCATE TABLE users;";
+
+    try (Connection conn = dataSource.getConnection();
+         PreparedStatement stm = conn.prepareStatement(sql)) {
+      stm.executeUpdate();
+    }
+
+    logger.info("truncate table: end");
+  }
+
 }

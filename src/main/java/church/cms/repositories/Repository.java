@@ -1,19 +1,22 @@
 package church.cms.repositories;
 
-import church.cms.domain.User;
 import church.cms.exceptions.InvalidEntityException;
 
-import javax.naming.NamingException;
 import java.sql.SQLException;
+import java.util.List;
 
 public interface Repository<T> {
-  User save(T entity) throws SQLException, InvalidEntityException;
+  List<T> list() throws SQLException;
 
-  T retrieve(Integer id) throws NamingException, SQLException, InvalidEntityException;
+  T save(T entity) throws SQLException;
 
-  void delete(Integer id) throws NamingException, SQLException, InvalidEntityException;
+  T retrieve(Integer id) throws SQLException, InvalidEntityException;
 
-  boolean exists(Integer id) throws NamingException, SQLException;
+  void delete(Integer id) throws SQLException, InvalidEntityException;
+
+  boolean exists(Integer id) throws SQLException;
 
   void createTableIfNotExists() throws SQLException;
+
+  void truncateTable() throws SQLException;
 }

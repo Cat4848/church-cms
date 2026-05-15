@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.naming.NamingException;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -51,7 +50,7 @@ public class UsersServlet extends HttpServlet {
       }
 
       logger.info("GET users: end");
-    } catch (SQLException | InvalidEntityException | NamingException e) {
+    } catch (SQLException | InvalidEntityException e) {
       res.setContentType("text/plain");
       res.setStatus(500);
       res.getWriter().write("we have an error on GET users route" + e.getMessage());
@@ -61,7 +60,7 @@ public class UsersServlet extends HttpServlet {
   }
 
   @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+  protected void doPost(HttpServletRequest req, HttpServletResponse res) {
     logger.info("POST users endpoint: start");
 
     try {
@@ -72,7 +71,7 @@ public class UsersServlet extends HttpServlet {
 
       deps.getCreateUserUseCase().execute(req, res);
 
-      logger.info("POST users: end");
+      logger.info("POST users endpoint: end");
     } catch (IOException | IllegalStateException | InvalidEntityException | SQLException e) {
       res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 

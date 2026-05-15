@@ -32,6 +32,13 @@ public class DeleteHymnBookUseCase {
     }
 
     Integer hymnBookId = Integer.parseInt(pathParts[1]);
+    boolean exists = hymnBookRepository.exists(hymnBookId);
+    if (!exists) {
+      logger.info("The hymn book with hymnBookId {} doesn't exist.", hymnBookId);
+
+      throw new IllegalArgumentException("The hymn book with hymn book ID " + hymnBookId + " doesn't exist.");
+    }
+
     hymnBookRepository.delete(hymnBookId);
 
     res.setStatus(HttpServletResponse.SC_OK);

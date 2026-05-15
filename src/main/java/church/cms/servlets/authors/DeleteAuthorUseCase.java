@@ -32,6 +32,14 @@ public class DeleteAuthorUseCase {
     }
 
     Integer authorId = Integer.parseInt(pathParts[1]);
+
+    boolean exists = authorRepository.exists(authorId);
+    if (!exists) {
+      logger.info("The author with authorId {} doesn't exist.", authorId);
+
+      throw new IllegalArgumentException("The author with author ID " + authorId + " doesn't exist.");
+    }
+
     authorRepository.delete(authorId);
 
     res.setStatus(HttpServletResponse.SC_OK);

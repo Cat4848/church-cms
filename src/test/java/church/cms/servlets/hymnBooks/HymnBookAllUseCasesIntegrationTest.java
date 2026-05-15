@@ -17,7 +17,6 @@ import java.sql.SQLException;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Integration Test suite for all Hymn Book Use Cases")
 public class HymnBookAllUseCasesIntegrationTest {
@@ -72,14 +71,15 @@ public class HymnBookAllUseCasesIntegrationTest {
 
     CreateHymnBookPayload payload = new CreateHymnBookPayload("Christian Hymns");
 
-    String name = given()
+    given()
             .body(payload)
             .when()
             .post("/api/hymn-books")
-            .then().statusCode(201)
-            .extract()
-            .path("name");
-    assertEquals(payload.name(), name);
+            .then()
+            .assertThat()
+            .statusCode(201)
+            .and()
+            .body("name", equalTo(payload.name()));
   }
 
   @Test

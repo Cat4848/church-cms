@@ -115,7 +115,7 @@ public class AuthorRepositoryIntegrationTest {
   }
 
   @Test
-  void ifItReturnsFalseWhenUserDoesNotExist() throws SQLException, NamingException {
+  void ifItReturnsFalseWhenAuthorDoesNotExist() throws SQLException {
     boolean isAuthor = authorRepository.exists(11);
     assertFalse(isAuthor);
   }

@@ -1,9 +1,6 @@
 package church.cms.context;
 
-import church.cms.repositories.AuthorRepository;
-import church.cms.repositories.HymnBookRepository;
-import church.cms.repositories.TopicRepository;
-import church.cms.repositories.UserRepository;
+import church.cms.repositories.*;
 import church.cms.servlets.authors.CreateAuthorUseCase;
 import church.cms.servlets.authors.DeleteAuthorUseCase;
 import church.cms.servlets.authors.ListAuthorsUseCase;
@@ -12,6 +9,10 @@ import church.cms.servlets.hymnBooks.CreateHymnBookUseCase;
 import church.cms.servlets.hymnBooks.DeleteHymnBookUseCase;
 import church.cms.servlets.hymnBooks.ListHymnBooksUseCase;
 import church.cms.servlets.hymnBooks.UpdateHymnBookUseCase;
+import church.cms.servlets.labels.CreateLabelUseCase;
+import church.cms.servlets.labels.DeleteLabelUseCase;
+import church.cms.servlets.labels.ListLabelsUseCase;
+import church.cms.servlets.labels.UpdateLabelUseCase;
 import church.cms.servlets.login.LoginUseCase;
 import church.cms.servlets.topics.CreateTopicUseCase;
 import church.cms.servlets.topics.DeleteTopicUseCase;
@@ -33,6 +34,7 @@ public class AppDeps {
   private final AuthorRepository authorRepository;
   private final HymnBookRepository hymnBookRepository;
   private final TopicRepository topicRepository;
+  private final LabelRepository labelRepository;
 
   private final LoginUseCase loginUseCase;
 
@@ -54,6 +56,11 @@ public class AppDeps {
   private final UpdateTopicUseCase updateTopicUseCase;
   private final DeleteTopicUseCase deleteTopicUseCase;
 
+  private final CreateLabelUseCase createLabelUseCase;
+  private final ListLabelsUseCase listLabelsUseCase;
+  private final UpdateLabelUseCase updateLabelUseCase;
+  private final DeleteLabelUseCase deleteLabelUseCase;
+
   public AppDeps(DataSource dataSource) throws SQLException {
     this.objectMapper = new ObjectMapper();
     this.passwordUtil = new PasswordUtil();
@@ -62,6 +69,7 @@ public class AppDeps {
     this.authorRepository = new AuthorRepository(dataSource, LoggerFactory.getLogger(AuthorRepository.class));
     this.hymnBookRepository = new HymnBookRepository(dataSource, LoggerFactory.getLogger(HymnBookRepository.class));
     this.topicRepository = new TopicRepository(dataSource, LoggerFactory.getLogger(TopicRepository.class));
+    this.labelRepository = new LabelRepository(dataSource, LoggerFactory.getLogger(LabelRepository.class));
 
     this.loginUseCase = new LoginUseCase(objectMapper,
                                          passwordUtil,
@@ -98,6 +106,15 @@ public class AppDeps {
             UpdateTopicUseCase.class));
     this.deleteTopicUseCase = new DeleteTopicUseCase(topicRepository, LoggerFactory.getLogger(
             DeleteTopicUseCase.class));
+
+    this.createLabelUseCase = new CreateLabelUseCase(objectMapper, labelRepository, LoggerFactory.getLogger(
+            CreateLabelUseCase.class));
+    this.listLabelsUseCase = new ListLabelsUseCase(objectMapper, labelRepository, LoggerFactory.getLogger(
+            ListLabelsUseCase.class));
+    this.updateLabelUseCase = new UpdateLabelUseCase(objectMapper, labelRepository, LoggerFactory.getLogger(
+            UpdateLabelUseCase.class));
+    this.deleteLabelUseCase = new DeleteLabelUseCase(labelRepository, LoggerFactory.getLogger(
+            DeleteLabelUseCase.class));
   }
 
   public UserRepository getUserRepository() {
@@ -110,6 +127,10 @@ public class AppDeps {
 
   public TopicRepository getTopicRepository() {
     return topicRepository;
+  }
+
+  public LabelRepository getLabelRepository() {
+    return labelRepository;
   }
 
   public CreateUserUseCase getCreateUserUseCase() {
@@ -168,15 +189,31 @@ public class AppDeps {
     return createTopicUseCase;
   }
 
-  public ListTopicsUseCase getListTopicsUseCase(){
+  public ListTopicsUseCase getListTopicsUseCase() {
     return listTopicsUseCase;
   }
 
-  public UpdateTopicUseCase getUpdateTopicUseCase(){
+  public UpdateTopicUseCase getUpdateTopicUseCase() {
     return updateTopicUseCase;
   }
 
-  public DeleteTopicUseCase getDeleteTopicUseCase(){
+  public DeleteTopicUseCase getDeleteTopicUseCase() {
     return deleteTopicUseCase;
+  }
+
+  public CreateLabelUseCase getCreateLabelUseCase() {
+    return createLabelUseCase;
+  }
+
+  public ListLabelsUseCase getListLabelsUseCase() {
+    return listLabelsUseCase;
+  }
+
+  public UpdateLabelUseCase getUpdateLabelUseCase() {
+    return updateLabelUseCase;
+  }
+
+  public DeleteLabelUseCase getDeleteLabelUseCase() {
+    return deleteLabelUseCase;
   }
 }

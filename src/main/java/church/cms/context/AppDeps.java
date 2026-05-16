@@ -2,6 +2,7 @@ package church.cms.context;
 
 import church.cms.repositories.AuthorRepository;
 import church.cms.repositories.HymnBookRepository;
+import church.cms.repositories.TopicRepository;
 import church.cms.repositories.UserRepository;
 import church.cms.servlets.authors.CreateAuthorUseCase;
 import church.cms.servlets.authors.DeleteAuthorUseCase;
@@ -12,6 +13,10 @@ import church.cms.servlets.hymnBooks.DeleteHymnBookUseCase;
 import church.cms.servlets.hymnBooks.ListHymnBooksUseCase;
 import church.cms.servlets.hymnBooks.UpdateHymnBookUseCase;
 import church.cms.servlets.login.LoginUseCase;
+import church.cms.servlets.topics.CreateTopicUseCase;
+import church.cms.servlets.topics.DeleteTopicUseCase;
+import church.cms.servlets.topics.ListTopicsUseCase;
+import church.cms.servlets.topics.UpdateTopicUseCase;
 import church.cms.servlets.users.CreateUserUseCase;
 import church.cms.utils.PasswordUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,6 +32,7 @@ public class AppDeps {
   private final UserRepository userRepository;
   private final AuthorRepository authorRepository;
   private final HymnBookRepository hymnBookRepository;
+  private final TopicRepository topicRepository;
 
   private final LoginUseCase loginUseCase;
 
@@ -43,6 +49,11 @@ public class AppDeps {
   private final UpdateHymnBookUseCase updateHymnBookUseCase;
   private final DeleteHymnBookUseCase deleteHymnBookUseCase;
 
+  private final CreateTopicUseCase createTopicUseCase;
+  private final ListTopicsUseCase listTopicsUseCase;
+  private final UpdateTopicUseCase updateTopicUseCase;
+  private final DeleteTopicUseCase deleteTopicUseCase;
+
   public AppDeps(DataSource dataSource) throws SQLException {
     this.objectMapper = new ObjectMapper();
     this.passwordUtil = new PasswordUtil();
@@ -50,6 +61,7 @@ public class AppDeps {
     this.userRepository = new UserRepository(dataSource, LoggerFactory.getLogger(UserRepository.class));
     this.authorRepository = new AuthorRepository(dataSource, LoggerFactory.getLogger(AuthorRepository.class));
     this.hymnBookRepository = new HymnBookRepository(dataSource, LoggerFactory.getLogger(HymnBookRepository.class));
+    this.topicRepository = new TopicRepository(dataSource, LoggerFactory.getLogger(TopicRepository.class));
 
     this.loginUseCase = new LoginUseCase(objectMapper,
                                          passwordUtil,
@@ -77,6 +89,15 @@ public class AppDeps {
             UpdateHymnBookUseCase.class));
     this.deleteHymnBookUseCase = new DeleteHymnBookUseCase(hymnBookRepository, LoggerFactory.getLogger(
             DeleteHymnBookUseCase.class));
+
+    this.createTopicUseCase = new CreateTopicUseCase(objectMapper, topicRepository, LoggerFactory.getLogger(
+            CreateTopicUseCase.class));
+    this.listTopicsUseCase = new ListTopicsUseCase(objectMapper, topicRepository, LoggerFactory.getLogger(
+            ListTopicsUseCase.class));
+    this.updateTopicUseCase = new UpdateTopicUseCase(objectMapper, topicRepository, LoggerFactory.getLogger(
+            UpdateTopicUseCase.class));
+    this.deleteTopicUseCase = new DeleteTopicUseCase(topicRepository, LoggerFactory.getLogger(
+            DeleteTopicUseCase.class));
   }
 
   public UserRepository getUserRepository() {
@@ -85,6 +106,10 @@ public class AppDeps {
 
   public AuthorRepository getAuthorRepository() {
     return authorRepository;
+  }
+
+  public TopicRepository getTopicRepository() {
+    return topicRepository;
   }
 
   public CreateUserUseCase getCreateUserUseCase() {
@@ -137,5 +162,21 @@ public class AppDeps {
 
   public DeleteHymnBookUseCase getDeleteHymnBookUseCase() {
     return deleteHymnBookUseCase;
+  }
+
+  public CreateTopicUseCase getCreateTopicUseCase() {
+    return createTopicUseCase;
+  }
+
+  public ListTopicsUseCase getListTopicsUseCase(){
+    return listTopicsUseCase;
+  }
+
+  public UpdateTopicUseCase getUpdateTopicUseCase(){
+    return updateTopicUseCase;
+  }
+
+  public DeleteTopicUseCase getDeleteTopicUseCase(){
+    return deleteTopicUseCase;
   }
 }

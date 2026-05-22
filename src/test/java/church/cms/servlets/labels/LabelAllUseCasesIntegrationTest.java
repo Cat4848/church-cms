@@ -5,6 +5,7 @@ import church.cms.domain.Label;
 import church.cms.repositories.LabelRepository;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
@@ -79,7 +80,7 @@ public class LabelAllUseCasesIntegrationTest {
             .post("/api/labels")
             .then()
             .assertThat()
-            .statusCode(201)
+            .statusCode(HttpServletResponse.SC_CREATED)
             .and()
             .body("name", equalTo(payload.name()));
   }
@@ -96,7 +97,7 @@ public class LabelAllUseCasesIntegrationTest {
     get("/api/labels")
             .then()
             .assertThat()
-            .statusCode(200)
+            .statusCode(HttpServletResponse.SC_OK)
             .and()
             .body("name", hasItems(label1.getName(), label2.getName()));
   }
@@ -116,10 +117,25 @@ public class LabelAllUseCasesIntegrationTest {
             .put("/api/labels")
             .then()
             .assertThat()
-            .statusCode(200)
+            .statusCode(HttpServletResponse.SC_OK)
             .and()
             .body("labelId", equalTo(label.getLabelId()), "name", equalTo(updatedTopicName));
   }
+
+  @Test
+  public void ifItErrorsWhenUpdatingExistingLabel() throws SQLException {
+    labelRepository.truncateTable();
+
+    UpdateLabelPayload payload = new UpdateLabelPayload(1, "not valid");
+
+    given()
+            .body(payload)
+            .put("/api/labels")
+            .then()
+            .assertThat()
+            .statusCode(HttpServletResponse.SC_BAD_REQUEST);
+  }
+
 
   @Test
   void ifItDeletesTopicSuccessfully() throws SQLException {
@@ -132,6 +148,6 @@ public class LabelAllUseCasesIntegrationTest {
             .delete("/api/labels/" + createdTopic.getLabelId())
             .then()
             .assertThat()
-            .statusCode(200);
+            .statusCode(HttpServletResponse.SC_OK);
   }
 }

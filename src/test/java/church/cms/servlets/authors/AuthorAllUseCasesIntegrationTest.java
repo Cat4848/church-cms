@@ -5,6 +5,7 @@ import church.cms.domain.Author;
 import church.cms.repositories.AuthorRepository;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
@@ -78,7 +79,7 @@ public class AuthorAllUseCasesIntegrationTest {
             .post("/api/authors")
             .then()
             .assertThat()
-            .statusCode(201)
+            .statusCode(HttpServletResponse.SC_CREATED)
             .extract()
             .path("name");
     assertEquals(payload.name(), name);
@@ -96,7 +97,7 @@ public class AuthorAllUseCasesIntegrationTest {
     get("/api/authors")
             .then()
             .assertThat()
-            .statusCode(200)
+            .statusCode(HttpServletResponse.SC_OK)
             .and()
             .body("name", hasItems(author1.getName(), author2.getName()));
   }
@@ -116,9 +117,22 @@ public class AuthorAllUseCasesIntegrationTest {
             .put("/api/authors")
             .then()
             .assertThat()
-            .statusCode(200)
+            .statusCode(HttpServletResponse.SC_OK)
             .and()
             .body("authorId", equalTo(author.getAuthorId()), "name", equalTo(updatedAuthorName));
+  }
+
+  @Test void ifErrorsWhenUpdatingUnexistingAuthor() throws SQLException{
+    authorRepository.truncateTable();
+
+    UpdateAuthorPayload payload = new UpdateAuthorPayload(1, "John Newman");
+
+    given()
+            .body(payload)
+            .put("/api/authors")
+            .then()
+            .assertThat()
+            .statusCode(HttpServletResponse.SC_BAD_REQUEST);
   }
 
   @Test

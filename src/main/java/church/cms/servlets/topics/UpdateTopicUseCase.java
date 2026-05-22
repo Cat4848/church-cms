@@ -61,7 +61,15 @@ public class UpdateTopicUseCase {
         throw new IllegalArgumentException("An error occurred while updating a Topic. Error message is: " + sb);
       }
 
-      Topic topic = new Topic(payload.topicId(), payload.name());
+      Integer topicId = payload.topicId();
+      boolean exists = topicRepository.exists(topicId);
+      if(!exists) {
+        logger.error("The Topic with topicId {} doesn't exist.", topicId);
+
+        throw new IllegalArgumentException("Cannot update Topic because the Topic with Topic ID " + topicId + " doesn't exist.");
+      }
+
+      Topic topic = new Topic(topicId, payload.name());
       Topic updatedTopic = topicRepository.save(topic);
 
       res.setContentType("application/json");

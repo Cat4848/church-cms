@@ -5,6 +5,7 @@ import church.cms.domain.Topic;
 import church.cms.repositories.TopicRepository;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
@@ -77,7 +78,7 @@ public class TopicAllUseCasesIntegrationTest {
             .post("/api/topics")
             .then()
             .assertThat()
-            .statusCode(201)
+            .statusCode(HttpServletResponse.SC_CREATED)
             .and()
             .body("name", equalTo(payload.name()));
   }
@@ -94,7 +95,7 @@ public class TopicAllUseCasesIntegrationTest {
     get("/api/topics")
             .then()
             .assertThat()
-            .statusCode(200)
+            .statusCode(HttpServletResponse.SC_OK)
             .and()
             .body("name", hasItems(topic1.getName(), topic2.getName()));
   }
@@ -114,9 +115,23 @@ public class TopicAllUseCasesIntegrationTest {
             .put("/api/topics")
             .then()
             .assertThat()
-            .statusCode(200)
+            .statusCode(HttpServletResponse.SC_OK)
             .and()
             .body("topicId", equalTo(topic.getTopicId()), "name", equalTo(updatedTopicName));
+  }
+
+  @Test
+  public void ifItErrorsWhenUpdatingUnexistingTopic() throws SQLException {
+    topicRepository.truncateTable();
+
+    UpdateTopicPayload payload = new UpdateTopicPayload(1, "not valid");
+
+    given()
+            .body(payload)
+            .put("/api/topics")
+            .then()
+            .assertThat()
+            .statusCode(HttpServletResponse.SC_BAD_REQUEST);
   }
 
   @Test
@@ -130,6 +145,6 @@ public class TopicAllUseCasesIntegrationTest {
             .delete("/api/topics/" + createdTopic.getTopicId())
             .then()
             .assertThat()
-            .statusCode(200);
+            .statusCode(HttpServletResponse.SC_OK);
   }
 }

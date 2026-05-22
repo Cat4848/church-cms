@@ -1,7 +1,7 @@
-package church.cms.servlets.labels;
+package church.cms.servlets.hymns;
 
-import church.cms.domain.Label;
-import church.cms.repositories.LabelRepository;
+import church.cms.domain.Hymn;
+import church.cms.repositories.HymnRepository;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.databind.DatabindException;
@@ -18,18 +18,19 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Set;
 
-public class UpdateLabelUseCase {
+public class CreateHymnUseCase {
   private final ObjectMapper objectMapper;
-  private final LabelRepository labelRepository;
+  private final HymnRepository hymnRepository;
   private final Logger logger;
 
-  public UpdateLabelUseCase(ObjectMapper objectMapper, LabelRepository labelRepository, Logger logger) {
+  public CreateHymnUseCase(ObjectMapper objectMapper, HymnRepository hymnRepository, Logger logger) {
     this.objectMapper = objectMapper;
-    this.labelRepository = labelRepository;
+    this.hymnRepository = hymnRepository;
     this.logger = logger;
   }
 
-  public void execute(HttpServletRequest req, HttpServletResponse res) throws IOException,
+  public void execute(HttpServletRequest req, HttpServletResponse res) throws
+          IOException,
           SQLException,
           IllegalArgumentException,
           StreamReadException,
@@ -37,17 +38,17 @@ public class UpdateLabelUseCase {
           DatabindException {
     logger.info("start");
 
-    UpdateLabelPayload payload = objectMapper.readValue(req.getReader(), UpdateLabelPayload.class);
+    CreateHymnPayload payload = objectMapper.readValue(req.getReader(), CreateHymnPayload.class);
 
     try (ValidatorFactory vf = Validation.buildDefaultValidatorFactory()) {
       Validator validator = vf.getValidator();
-      Set<ConstraintViolation<UpdateLabelPayload>> violations = validator.validate(payload);
+      Set<ConstraintViolation<CreateHymnPayload>> violations = validator.validate(payload);
 
       if (!violations.isEmpty()) {
         int size = violations.size();
         int i = 0;
         StringBuilder sb = new StringBuilder();
-        for (ConstraintViolation<UpdateLabelPayload> violation : violations) {
+        for (ConstraintViolation<CreateHymnPayload> violation : violations) {
           sb.append(violation.getMessage());
           if (i < size - 1) {
             sb.append(",");
@@ -58,28 +59,26 @@ public class UpdateLabelUseCase {
         logger.info("payload validation failed with message: {}", sb);
         logger.info("throwing IllegalArgumentException");
 
-        throw new IllegalArgumentException("An error occurred while updating a Label. Error message is: " + sb);
+        throw new IllegalArgumentException("An error occurred while creating a new Hymn. Error message is: " + sb);
       }
 
-      Integer labelId = payload.labelId();
-      boolean exists = labelRepository.exists(labelId);
-      if(!exists) {
-        logger.error("The Label with labelId {} doesn't exist.", labelId);
-
-        throw new IllegalArgumentException("Cannot update Label because the Label with Label ID " + labelId + " doesn't exist.");
-      }
-
-      Label label = new Label(labelId, payload.name());
-      Label updatedLabel = labelRepository.save(label);
+      Hymn hymn = new Hymn(
+              payload.authorId(),
+              payload.authorExtras(),
+              payload.title(),
+              payload.lyrics(),
+              payload.hymnBookId(),
+              payload.numberInHymnBook(),
+              payload.topicId(),
+              payload.labelId()
+      );
+      Hymn createdHymn = hymnRepository.save(hymn);
 
       res.setContentType("application/json");
-      res.setStatus(HttpServletResponse.SC_OK);
-      objectMapper.writeValue(res.getWriter(), updatedLabel);
+      res.setStatus(HttpServletResponse.SC_CREATED);
+      objectMapper.writeValue(res.getWriter(), createdHymn);
 
       logger.info("end");
     }
-
-    logger.info("end");
   }
-
 }

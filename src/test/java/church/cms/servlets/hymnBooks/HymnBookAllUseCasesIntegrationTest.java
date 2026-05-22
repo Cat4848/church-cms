@@ -5,6 +5,7 @@ import church.cms.domain.HymnBook;
 import church.cms.repositories.HymnBookRepository;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
@@ -77,7 +78,7 @@ public class HymnBookAllUseCasesIntegrationTest {
             .post("/api/hymn-books")
             .then()
             .assertThat()
-            .statusCode(201)
+            .statusCode(HttpServletResponse.SC_CREATED)
             .and()
             .body("name", equalTo(payload.name()));
   }
@@ -94,7 +95,7 @@ public class HymnBookAllUseCasesIntegrationTest {
     get("/api/hymn-books")
             .then()
             .assertThat()
-            .statusCode(200)
+            .statusCode(HttpServletResponse.SC_OK)
             .and()
             .body("name", hasItems(hymnBook1.getName(), hymnBook2.getName()));
   }
@@ -114,9 +115,23 @@ public class HymnBookAllUseCasesIntegrationTest {
             .put("/api/hymn-books")
             .then()
             .assertThat()
-            .statusCode(200)
+            .statusCode(HttpServletResponse.SC_OK)
             .and()
             .body("hymnBookId", equalTo(hymnBook.getHymnBookId()), "name", equalTo(updatedHymnBookName));
+  }
+
+  @Test
+  void ifItErrorsWhenUpdatingUnexistingHymnBook() throws SQLException{
+    hymnBookRepository.truncateTable();
+
+    UpdateHymnBookPayload payload = new UpdateHymnBookPayload(1, "Morning Service");
+
+    given()
+            .body(payload)
+            .put("/api/hymn-books")
+            .then()
+            .assertThat()
+            .statusCode(HttpServletResponse.SC_BAD_REQUEST);
   }
 
   @Test
@@ -130,6 +145,6 @@ public class HymnBookAllUseCasesIntegrationTest {
             .delete("/api/hymn-books/" + createdHymnBook.getHymnBookId())
             .then()
             .assertThat()
-            .statusCode(200);
+            .statusCode(HttpServletResponse.SC_OK);
   }
 }

@@ -30,11 +30,11 @@ public class UpdateAuthorUseCase {
   }
 
   public void execute(HttpServletRequest req, HttpServletResponse res) throws IOException,
-          SQLException,
-          IllegalArgumentException,
-          StreamReadException,
-          StreamWriteException,
-          DatabindException {
+                                                                              SQLException,
+                                                                              IllegalArgumentException,
+                                                                              StreamReadException,
+                                                                              StreamWriteException,
+                                                                              DatabindException {
     logger.info("start");
 
     UpdateAuthorPayload payload = objectMapper.readValue(req.getReader(), UpdateAuthorPayload.class);
@@ -61,7 +61,15 @@ public class UpdateAuthorUseCase {
         throw new IllegalArgumentException("An error occurred while updating a new author. Error message is: " + sb);
       }
 
-      Author author = new Author(payload.authorId(), payload.name());
+      Integer authorId = payload.authorId();
+      boolean exists = authorRepository.exists(authorId);
+      if (!exists) {
+        logger.error("The Author with authorId {} doesn't exist.", authorId);
+
+        throw new IllegalArgumentException("Cannot update Author because the Author with Author ID " + authorId + " doesn't exist.");
+      }
+
+      Author author = new Author(authorId, payload.name());
       Author updatedAuthor = authorRepository.save(author);
 
       res.setContentType("application/json");

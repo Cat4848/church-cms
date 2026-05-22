@@ -9,6 +9,10 @@ import church.cms.servlets.hymnBooks.CreateHymnBookUseCase;
 import church.cms.servlets.hymnBooks.DeleteHymnBookUseCase;
 import church.cms.servlets.hymnBooks.ListHymnBooksUseCase;
 import church.cms.servlets.hymnBooks.UpdateHymnBookUseCase;
+import church.cms.servlets.hymns.CreateHymnUseCase;
+import church.cms.servlets.hymns.DeleteHymnUseCase;
+import church.cms.servlets.hymns.ListHymnsUseCase;
+import church.cms.servlets.hymns.UpdateHymnUseCase;
 import church.cms.servlets.labels.CreateLabelUseCase;
 import church.cms.servlets.labels.DeleteLabelUseCase;
 import church.cms.servlets.labels.ListLabelsUseCase;
@@ -35,6 +39,7 @@ public class AppDeps {
   private final HymnBookRepository hymnBookRepository;
   private final TopicRepository topicRepository;
   private final LabelRepository labelRepository;
+  private final HymnRepository hymnRepository;
 
   private final LoginUseCase loginUseCase;
 
@@ -61,6 +66,11 @@ public class AppDeps {
   private final UpdateLabelUseCase updateLabelUseCase;
   private final DeleteLabelUseCase deleteLabelUseCase;
 
+  private final CreateHymnUseCase createHymnUseCase;
+  private final ListHymnsUseCase listHymnsUseCase;
+  private final UpdateHymnUseCase updateHymnUseCase;
+  private final DeleteHymnUseCase deleteHymnUseCase;
+
   public AppDeps(DataSource dataSource) throws SQLException {
     this.objectMapper = new ObjectMapper();
     this.passwordUtil = new PasswordUtil();
@@ -70,6 +80,7 @@ public class AppDeps {
     this.hymnBookRepository = new HymnBookRepository(dataSource, LoggerFactory.getLogger(HymnBookRepository.class));
     this.topicRepository = new TopicRepository(dataSource, LoggerFactory.getLogger(TopicRepository.class));
     this.labelRepository = new LabelRepository(dataSource, LoggerFactory.getLogger(LabelRepository.class));
+    this.hymnRepository = new HymnRepository(dataSource, LoggerFactory.getLogger(HymnRepository.class));
 
     this.loginUseCase = new LoginUseCase(objectMapper,
                                          passwordUtil,
@@ -115,6 +126,16 @@ public class AppDeps {
             UpdateLabelUseCase.class));
     this.deleteLabelUseCase = new DeleteLabelUseCase(labelRepository, LoggerFactory.getLogger(
             DeleteLabelUseCase.class));
+
+    this.createHymnUseCase = new CreateHymnUseCase(objectMapper,
+                                                   hymnRepository,
+                                                   LoggerFactory.getLogger(CreateHymnUseCase.class));
+    this.listHymnsUseCase = new ListHymnsUseCase(objectMapper,
+                                                 hymnRepository,
+                                                 LoggerFactory.getLogger(ListHymnsUseCase.class));
+    this.updateHymnUseCase = new UpdateHymnUseCase(objectMapper, hymnRepository, LoggerFactory.getLogger(
+            UpdateHymnUseCase.class));
+    this.deleteHymnUseCase = new DeleteHymnUseCase(hymnRepository, LoggerFactory.getLogger(DeleteHymnUseCase.class));
   }
 
   public UserRepository getUserRepository() {
@@ -131,6 +152,10 @@ public class AppDeps {
 
   public LabelRepository getLabelRepository() {
     return labelRepository;
+  }
+
+  public HymnRepository getHymnRepository() {
+    return hymnRepository;
   }
 
   public CreateUserUseCase getCreateUserUseCase() {
@@ -215,5 +240,21 @@ public class AppDeps {
 
   public DeleteLabelUseCase getDeleteLabelUseCase() {
     return deleteLabelUseCase;
+  }
+
+  public CreateHymnUseCase getCreateHymnUseCase() {
+    return createHymnUseCase;
+  }
+
+  public ListHymnsUseCase getListHymnsUseCase() {
+    return listHymnsUseCase;
+  }
+
+  public UpdateHymnUseCase getUpdateHymnUseCase() {
+    return updateHymnUseCase;
+  }
+
+  public DeleteHymnUseCase getDeleteHymnUseCase() {
+    return deleteHymnUseCase;
   }
 }

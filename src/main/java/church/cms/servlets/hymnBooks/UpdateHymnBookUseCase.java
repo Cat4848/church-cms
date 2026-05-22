@@ -30,11 +30,11 @@ public class UpdateHymnBookUseCase {
   }
 
   public void execute(HttpServletRequest req, HttpServletResponse res) throws IOException,
-          SQLException,
-          IllegalArgumentException,
-          StreamReadException,
-          StreamWriteException,
-          DatabindException {
+                                                                              SQLException,
+                                                                              IllegalArgumentException,
+                                                                              StreamReadException,
+                                                                              StreamWriteException,
+                                                                              DatabindException {
     logger.info("start");
 
     UpdateHymnBookPayload payload = objectMapper.readValue(req.getReader(), UpdateHymnBookPayload.class);
@@ -61,7 +61,15 @@ public class UpdateHymnBookUseCase {
         throw new IllegalArgumentException("An error occurred while updating a hymn book. Error message is: " + sb);
       }
 
-      HymnBook hymnBook = new HymnBook(payload.hymnBookId(), payload.name());
+      Integer hymnBookId = payload.hymnBookId();
+      boolean exists = hymnBookRepository.exists(hymnBookId);
+      if (!exists) {
+        logger.error("The Hymn Book with hymnBookId {} doesn't exist.", hymnBookId);
+
+        throw new IllegalArgumentException("Cannot update Hymn Book because the Hymn Book with Hymn Book ID " + hymnBookId + " doesn't exist.");
+      }
+
+      HymnBook hymnBook = new HymnBook(hymnBookId, payload.name());
       HymnBook updatedHymnBook = hymnBookRepository.save(hymnBook);
 
       res.setContentType("application/json");

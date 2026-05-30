@@ -68,6 +68,15 @@ public class LoginUseCase {
       newSession.setAttribute("csrfToken", token);
 
       res.setHeader("X-CSRF-TOKEN", token);
+
+      LoginSuccessResponsePayload resPayload = new LoginSuccessResponsePayload(
+              existingUser.getFirstName(),
+              existingUser.getLastName(),
+              existingUser.getEmail(),
+              existingUser.getIsAdmin()
+      );
+      objectMapper.writeValue(res.getWriter(), resPayload);
+
       res.setStatus(HttpServletResponse.SC_OK);
 
       logger.info("end");

@@ -1,7 +1,102 @@
-import styles from "./Login.module.css";
+import loginStyles from "./Login.module.css";
+import formStyles from "../../css/forms.module.css";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import { api } from "../../../config/endpoints.ts";
+import { useAppDispatch } from "../../store/hooks";
+import { updateUserDetails } from "../../store/slices/user";
+import { type NavigateFunction, useNavigate } from "react-router";
+import { toast } from "react-toastify";
+import type { LoginSuccessRequestPayload } from "./types.ts";
+
+interface FormValues {
+  email: string;
+  password: string;
+}
 
 const Login = () => {
-  return <h1>Login</h1>;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>();
+
+  const dispatch = useAppDispatch();
+  const navigate: NavigateFunction = useNavigate();
+
+  const handleSubmitLoginRequest: SubmitHandler<FormValues> = async (data: FormValues) => {
+    try {
+      const res: Response = await fetch(api + "/auth/login", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        const token: string = res.headers.get("X-CSRF-TOKEN")!;
+        const userDetails: LoginSuccessRequestPayload = await res.json();
+
+        dispatch(
+          updateUserDetails({
+            firstName: userDetails.firstName,
+            lastName: userDetails.lastName,
+            email: userDetails.email,
+            isAuthenticated: true,
+            isAdmin: userDetails.isAdmin,
+            token,
+          }),
+        );
+        navigate("/");
+      } else {
+        toast.error("Incorrect email or password.");
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        toast.error("An error occurred while logging in " + e.message.slice(1, 11));
+      } else {
+        toast.error("An error occurred while logging in.");
+      }
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit(handleSubmitLoginRequest)} className={loginStyles["outer-container"]}>
+      <div className={loginStyles["inner-container"]}>
+        <div className={formStyles["container"]}>
+          <h1>Login</h1>
+
+          <div className={formStyles["input-group"]}>
+            <label htmlFor="login-email-address">Email Address</label>
+            <input
+              id="login-email-address"
+              type="email"
+              {...register("email", {
+                required: "Required",
+                pattern: {
+                  value: new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"),
+                  message: "Not valid",
+                },
+              })}
+            />
+            <div className={formStyles["error"]}>{errors.email?.message}</div>
+          </div>
+
+          <div className={formStyles["input-group"]}>
+            <label htmlFor="login-password">Password</label>
+            <input
+              id="login-password"
+              type="password"
+              {...register("password", {
+                required: "Required",
+                minLength: { value: 8, message: "Min 8 characters" },
+                max: { value: 255, message: "Max 255 characters" },
+              })}
+            />
+            <div className={formStyles["error"]}>{errors.password?.message}</div>
+          </div>
+          <button onClick={handleSubmit(handleSubmitLoginRequest)}>Login</button>
+        </div>
+      </div>
+    </form>
+  );
 };
 
 export default Login;

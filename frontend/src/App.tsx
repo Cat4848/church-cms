@@ -6,18 +6,21 @@ import { Provider } from "react-redux";
 import store from "./store";
 import { ToastContainer } from "react-toastify";
 import CheckAuthenticationState from "./components/Login/CheckAuthenticationState.tsx";
+import { ErrorBoundary, Fallback } from "./components/ErrorBoundary/ErrorBoundary.tsx";
 
 const App = () => {
   return (
     // add here any other providers
     <Provider store={store}>
-      <CheckAuthenticationState>
-        <BrowserRouter>
-          <Navigation />
-          <AppRoutes />
-          <ToastContainer theme="dark" />
-        </BrowserRouter>
-      </CheckAuthenticationState>
+      <ErrorBoundary fallback={<Fallback />}>
+        <CheckAuthenticationState>
+          <BrowserRouter>
+            <Navigation />
+            <AppRoutes />
+            <ToastContainer theme="dark" />
+          </BrowserRouter>
+        </CheckAuthenticationState>
+      </ErrorBoundary>
     </Provider>
   );
 };

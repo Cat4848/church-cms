@@ -3,10 +3,6 @@ import { NavLink } from "react-router";
 const Navigation = () => {
   return (
     <nav>
-      <NavLink to="/login" className={({ isActive }) => (isActive ? "nav-active" : "")}>
-        Login
-      </NavLink>
-
       <NavLink to="/" className={({ isActive }) => (isActive ? "nav-active" : "")}>
         Dashboard
       </NavLink>

@@ -6,12 +6,14 @@ import Authors from "../Authors/Authors.tsx";
 import HymnBooks from "../HymnBooks/HymnBooks.tsx";
 import Topics from "../Topics/Topics.tsx";
 import Labels from "../Labels/Labels.tsx";
+import LoginAuthCheck from "./LoginAuthCheck.tsx";
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      // TODO all protected components could be under this layout
+      <Route element={<LoginAuthCheck />}>
+        <Route path="/login" element={<Login />} />
+      </Route>
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<Dashboard />} />
         <Route path="/authors" element={<Authors />} />

@@ -77,6 +77,7 @@ public class LoginUseCase {
       );
       objectMapper.writeValue(res.getWriter(), resPayload);
 
+      res.setContentType("application/json");
       res.setStatus(HttpServletResponse.SC_OK);
 
       logger.info("end");

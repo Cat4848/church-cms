@@ -4,14 +4,14 @@ import { selectUser } from "../../store/slices/user/selectors";
 import type { UserState } from "../../store/slices/user";
 import { Navigate } from "react-router";
 
-const ProtectedRoute = () => {
+const LoginAuthCheck = () => {
   const user: UserState = useAppSelector(selectUser);
 
-  if (!user.isAuthenticated) {
-    return <Navigate to="/login" replace />;
+  if (user.isAuthenticated) {
+    return <Navigate to="/" replace />;
   }
 
   return <Outlet />;
 };
 
-export default ProtectedRoute;
+export default LoginAuthCheck;

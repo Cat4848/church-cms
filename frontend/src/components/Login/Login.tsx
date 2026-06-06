@@ -7,6 +7,8 @@ import { updateUserDetails } from "../../store/slices/user";
 import { type NavigateFunction, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import type { LoginSuccessRequestPayload } from "./types.ts";
+import { useState } from "react";
+import Loading from "../Loading/Loading.tsx";
 
 interface FormValues {
   email: string;
@@ -22,16 +24,27 @@ const Login = () => {
 
   const dispatch = useAppDispatch();
   const navigate: NavigateFunction = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   const handleSubmitLoginRequest: SubmitHandler<FormValues> = async (data: FormValues) => {
+    setIsLoading(true);
+
     try {
       const res: Response = await fetch(api + "/auth/login", {
         method: "POST",
         body: JSON.stringify(data),
+        credentials: "include",
       });
 
       if (res.ok) {
-        const token: string = res.headers.get("X-CSRF-TOKEN")!;
+        const csrfToken: string = res.headers.get("X-CSRF-TOKEN")!;
+
+        localStorage.setItem("csrfToken", csrfToken);
+
         const userDetails: LoginSuccessRequestPayload = await res.json();
 
         dispatch(
@@ -41,7 +54,7 @@ const Login = () => {
             email: userDetails.email,
             isAuthenticated: true,
             isAdmin: userDetails.isAdmin,
-            token,
+            csrfToken,
           }),
         );
         navigate("/");
@@ -50,10 +63,13 @@ const Login = () => {
       }
     } catch (e) {
       if (e instanceof Error) {
+        // we don't want to show a long error message
         toast.error("An error occurred while logging in " + e.message.slice(1, 11));
       } else {
         toast.error("An error occurred while logging in.");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 

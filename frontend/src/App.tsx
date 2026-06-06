@@ -5,16 +5,19 @@ import Navigation from "./components/Routing/Navigation.tsx";
 import { Provider } from "react-redux";
 import store from "./store";
 import { ToastContainer } from "react-toastify";
+import CheckAuthenticationState from "./components/Login/CheckAuthenticationState.tsx";
 
 const App = () => {
   return (
     // add here any other providers
     <Provider store={store}>
-      <BrowserRouter>
-        <Navigation />
-        <AppRoutes />
-        <ToastContainer theme="dark" />
-      </BrowserRouter>
+      <CheckAuthenticationState>
+        <BrowserRouter>
+          <Navigation />
+          <AppRoutes />
+          <ToastContainer theme="dark" />
+        </BrowserRouter>
+      </CheckAuthenticationState>
     </Provider>
   );
 };

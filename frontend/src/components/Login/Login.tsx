@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import type { LoginSuccessRequestPayload } from "./types.ts";
 import { useState } from "react";
 import Loading from "../Loading/Loading.tsx";
+import MandatoryField from "../MandatoryField/MandatoryField.tsx";
 
 interface FormValues {
   email: string;
@@ -80,7 +81,9 @@ const Login = () => {
           <h1>Login</h1>
 
           <div className={formStyles["input-group"]}>
-            <label htmlFor="login-email-address">Email Address</label>
+            <label htmlFor="login-email-address">
+              <MandatoryField /> Email Address
+            </label>
             <input
               id="login-email-address"
               type="email"
@@ -96,7 +99,9 @@ const Login = () => {
           </div>
 
           <div className={formStyles["input-group"]}>
-            <label htmlFor="login-password">Password</label>
+            <label htmlFor="login-password">
+              <MandatoryField /> Password
+            </label>
             <input
               id="login-password"
               type="password"

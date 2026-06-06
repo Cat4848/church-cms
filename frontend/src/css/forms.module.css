@@ -6,8 +6,9 @@
   gap: 1rem;
   padding-top: 2rem;
   padding-bottom: 10rem;
-  border: 2px solid var(--accent);
+  border: 2px solid var(--accent-border);
   border-radius: var(--frames-border-radius);
+  box-shadow: var(--accent) 0 0 8px 0;
 }
 
 .input-group {

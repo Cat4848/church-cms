@@ -42,7 +42,7 @@
     --code-bg: #1f2028;
     --accent: #c084fc;
     --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
+    --accent-border: rgba(205, 167, 251, 0.15);
     --social-bg: rgba(47, 48, 58, 0.5);
     --shadow: rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
   }
@@ -114,7 +114,8 @@ input {
 
 button {
   font-family: var(--sans);
-  padding: 0.4rem 1.5rem;
+  font-size: 0.9rem;
+  padding: 0.6rem 2.2rem;
   border: 1px solid var(--accent-border);
   border-radius: var(--input-border-radius);
   background-color: var(--accent-bg);

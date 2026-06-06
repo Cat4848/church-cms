@@ -1,7 +1,10 @@
 import { NavLink } from "react-router";
+import { useLocation } from "react-router";
 
 const Navigation = () => {
-  return (
+  const location = useLocation();
+
+  return !location.pathname.includes("login") ? (
     <nav>
       <NavLink to="/" className={({ isActive }) => (isActive ? "nav-active" : "")}>
         Dashboard
@@ -23,6 +26,8 @@ const Navigation = () => {
         Labels
       </NavLink>
     </nav>
+  ) : (
+    <nav></nav>
   );
 };
 

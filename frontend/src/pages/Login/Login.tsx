@@ -8,8 +8,8 @@ import { type NavigateFunction, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import type { LoginSuccessRequestPayload } from "./types.ts";
 import { useState } from "react";
-import Loading from "../Loading/Loading.tsx";
-import MandatoryField from "../MandatoryField/MandatoryField.tsx";
+import Loading from "../../components/Loading/Loading.tsx";
+import MandatoryField from "../../components/MandatoryField/MandatoryField.tsx";
 
 interface FormValues {
   email: string;

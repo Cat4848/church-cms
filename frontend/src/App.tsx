@@ -5,14 +5,14 @@ import Navigation from "./components/Routing/Navigation.tsx";
 import { Provider } from "react-redux";
 import store from "./store";
 import { ToastContainer } from "react-toastify";
-import CheckAuthenticationState from "./components/Login/CheckAuthenticationState.tsx";
-import { ErrorBoundary, Fallback } from "./components/ErrorBoundary/ErrorBoundary.tsx";
+import CheckAuthenticationState from "./pages/Login/CheckAuthenticationState.tsx";
+import { ErrorBoundary, ErrorFallback } from "./components/ErrorBoundary/ErrorBoundary.tsx";
 
 const App = () => {
   return (
     // add here any other providers
     <Provider store={store}>
-      <ErrorBoundary fallback={<Fallback />}>
+      <ErrorBoundary fallback={<ErrorFallback />}>
         <CheckAuthenticationState>
           <BrowserRouter>
             <Navigation />

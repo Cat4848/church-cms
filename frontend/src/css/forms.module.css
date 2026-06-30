@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 2rem;
+  padding-bottom: 10rem;
+  border: 2px solid var(--accent-border);
+  border-radius: var(--frames-border-radius);
+  box-shadow: var(--accent) 0 0 8px 0;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+}
+
+.error {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0;
+  text-align: left;
+  color: var(--warn);
+  height: 0.75rem;
+}
+

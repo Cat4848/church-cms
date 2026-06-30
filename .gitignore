@@ -6,6 +6,11 @@ build/
 .kotlin
 logs/
 
+### Frontend ###
+frontend/config/endpoints.ts
+frontend/node_modules
+frontend/.idea
+
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml

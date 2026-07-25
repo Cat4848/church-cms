@@ -11,6 +11,14 @@ export const authorsApi = createApi({
       query: () => "/authors",
       providesTags: ["Authors"],
     }),
+    createAuthor: builder.mutation<Author, Author["name"]>({
+      query: (authorName) => ({
+        url: "/authors",
+        method: "POST",
+        body: { name: authorName },
+      }),
+      invalidatesTags: ["Authors"],
+    }),
     updateAuthor: builder.mutation<Author, Author>({
       query: (author) => ({
         url: "/authors",
@@ -22,4 +30,4 @@ export const authorsApi = createApi({
   }),
 });
 
-export const { useGetAllAuthorsQuery, useUpdateAuthorMutation } = authorsApi;
+export const { useGetAllAuthorsQuery, useCreateAuthorMutation, useUpdateAuthorMutation } = authorsApi;

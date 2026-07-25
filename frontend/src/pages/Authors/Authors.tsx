@@ -1,7 +1,7 @@
 import { useGetAllAuthorsQuery, useUpdateAuthorMutation } from "../../store/api/authorsApi.ts";
 import Loading from "../../components/Loading/Loading.tsx";
 import { ErrorFallback } from "../../components/ErrorBoundary/ErrorBoundary.tsx";
-import Author from "./Author/Author.tsx";
+import Author from "./Author.tsx";
 import NoContent from "../../components/NoContent/NoContent.tsx";
 import type { Author as AuthorInterface } from "../../domain/Author.ts";
 import { toast } from "react-toastify";
@@ -23,6 +23,7 @@ const Authors = () => {
   }
 
   const handleChange = (author: AuthorInterface): void => {
+    // letters, _, _ and space
     const regExp: RegExp = new RegExp("^[a-zA-Z\\-\\_\\s]{3,100}$", "gm");
 
     if (regExp.test(author.name)) {

@@ -33,6 +33,10 @@ export class ErrorBoundary extends React.Component<Props, State> {
   }
 }
 
-export const Fallback = () => {
-  return <div className={styles.errorBoundary}>Oops, sorry, something went wrong.</div>;
+interface ErrorFallbackProps {
+  error?: string | undefined;
+}
+
+export const ErrorFallback = ({ error }: ErrorFallbackProps) => {
+  return <div className={styles.errorBoundary}>{error ? error : "Oops, sorry, something went wrong."}</div>;
 };

@@ -8,8 +8,9 @@ logs/
 
 ### Frontend ###
 frontend/config/endpoints.ts
-frontend/node_modules
-frontend/.idea
+frontend/node_modules/
+frontend/.idea/
+frontend/.vite/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

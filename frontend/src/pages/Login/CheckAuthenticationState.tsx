@@ -5,7 +5,7 @@ import type { UseFetchReturnValue } from "../../utils";
 import type { LoginSuccessRequestPayload } from "./types.ts";
 import useFetchReq from "../../utils/useFetchReq.ts";
 import { api } from "../../../config/endpoints.ts";
-import Loading from "../Loading/Loading.tsx";
+import Loading from "../../components/Loading/Loading.tsx";
 
 interface Props {
   children: JSX.Element;

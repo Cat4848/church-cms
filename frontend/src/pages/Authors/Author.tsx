@@ -1,6 +1,6 @@
-import styles from "./Author.module.css";
 import { useState } from "react";
-import type { Author } from "../../../domain/Author.ts";
+import type { Author } from "../../domain/Author.ts";
+import globalStyles from "../../css/global.module.css";
 
 interface Props {
   authorId: number;
@@ -26,12 +26,12 @@ const Author = ({ authorId, name, onChange }: Props) => {
   };
 
   return isEdit ? (
-    <div className={styles["box"]}>
+    <div className={globalStyles["flex-box-center-gap-1-mar-top-2"]}>
       <input value={authorName} onChange={(e) => setAuthorName(e.target.value)} />
       <button onClick={handleSave}>Save</button>
     </div>
   ) : (
-    <div className={styles["box"]}>
+    <div className={globalStyles["flex-box-center-gap-1-mar-top-2"]}>
       <div>{name}</div>
       <button onClick={startEditing}>Edit</button>
     </div>

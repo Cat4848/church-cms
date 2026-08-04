@@ -27,3 +27,20 @@
   font-style: italic;
   height: 0.5rem
 }
+
+.grid-two-columns {
+  display: grid;
+  grid-template-columns: 15rem 6rem;
+  justify-content: center;
+  column-gap: 2rem;
+  row-gap: 2rem;
+  margin-top: 4rem;
+}
+
+.text-align-left {
+  text-align: left;
+}
+
+.width-100 {
+  width: 100%;
+}

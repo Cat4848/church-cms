@@ -1,8 +1,7 @@
 import { useState } from "react";
 import type { Author } from "../../../domain/Author.ts";
 import globalStyles from "../../../css/global.module.css";
-import { authorNameRegexp, invalidAuthorNameErrorMessage } from "../../../lib/constants.ts";
-import styles from "./Author.module.css";
+import { nameRegexp, invalidNameErrorMessage } from "../../../lib/constants.ts";
 
 interface Props {
   authorId: number;
@@ -22,11 +21,11 @@ const Author = ({ authorId, name, onUpdate }: Props) => {
 
   const handleSave = (): void => {
     if (name !== authorName) {
-      if (authorNameRegexp.test(authorName)) {
+      if (nameRegexp.test(authorName)) {
         onUpdate({ authorId, name: authorName });
         setIsEdit(false);
       } else {
-        setUpdateAuthorError(invalidAuthorNameErrorMessage);
+        setUpdateAuthorError(invalidNameErrorMessage);
       }
     } else {
       setIsEdit(false);
@@ -35,14 +34,14 @@ const Author = ({ authorId, name, onUpdate }: Props) => {
 
   return isEdit ? (
     <>
-      <div className={styles["text-align-left"]}>
+      <div className={globalStyles["text-align-left"]}>
         <input
           value={authorName}
           onChange={(e) => {
             setUpdateAuthorError("");
             setAuthorName(e.target.value);
           }}
-          className={styles["width-100"]}
+          className={globalStyles["width-100"]}
         />
         <div className={globalStyles["error-box"]}>{updateAuthorError && updateAuthorError}</div>
       </div>
@@ -52,7 +51,7 @@ const Author = ({ authorId, name, onUpdate }: Props) => {
     </>
   ) : (
     <>
-      <div className={styles["text-align-left"]}>{name}</div>
+      <div className={globalStyles["text-align-left"]}>{name}</div>
       <button onClick={startEditing}>Edit</button>
     </>
   );

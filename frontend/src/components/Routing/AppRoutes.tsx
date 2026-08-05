@@ -4,7 +4,7 @@ import Dashboard from "../Dashboard/Dashboard.tsx";
 import ProtectedRoute from "./ProtectedRoute.tsx";
 import Authors from "../../pages/Authors/Authors/Authors.tsx";
 import HymnBooks from "../../pages/HymnBooks/HymnBooks.tsx";
-import Topics from "../Topics/Topics.tsx";
+import Topics from "../../pages/Topics/Topics/Topics.tsx";
 import Labels from "../Labels/Labels.tsx";
 import LoginAuthCheck from "./LoginAuthCheck.tsx";
 

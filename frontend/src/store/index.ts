@@ -4,18 +4,25 @@ import { authorsApi } from "./api/authorsApi.ts";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { hymnBooksApi } from "./api/hymnBooksApi.ts";
 import { topicsApi } from "./api/topicsApi.ts";
+import { labelsApi } from "./api/labelsApi.ts";
 
 const reducer = {
   user: userReducer,
   [authorsApi.reducerPath]: authorsApi.reducer,
   [hymnBooksApi.reducerPath]: hymnBooksApi.reducer,
   [topicsApi.reducerPath]: topicsApi.reducer,
+  [labelsApi.reducerPath]: labelsApi.reducer,
 };
 
 const store = configureStore({
   reducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authorsApi.middleware, hymnBooksApi.middleware, topicsApi.middleware),
+    getDefaultMiddleware().concat(
+      authorsApi.middleware,
+      hymnBooksApi.middleware,
+      topicsApi.middleware,
+      labelsApi.middleware,
+    ),
   devTools: true,
 });
 

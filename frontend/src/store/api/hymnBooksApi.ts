@@ -11,6 +11,14 @@ export const hymnBooksApi = createApi({
       query: () => "/hymn-books",
       providesTags: ["HymnBooks"],
     }),
+    createHymnBook: builder.mutation<HymnBook, HymnBook["name"]>({
+      query: (hymnBookName) => ({
+        url: "/hymn-books",
+        method: "POST",
+        body: { name: hymnBookName },
+      }),
+      invalidatesTags: ["HymnBooks"],
+    }),
     updateHymnBook: builder.mutation<HymnBook, HymnBook>({
       query: (hymnBook: HymnBook) => ({
         url: "/hymn-books",
@@ -22,4 +30,4 @@ export const hymnBooksApi = createApi({
   }),
 });
 
-export const { useGetAllHymnBooksQuery, useUpdateHymnBookMutation } = hymnBooksApi;
+export const { useGetAllHymnBooksQuery, useCreateHymnBookMutation, useUpdateHymnBookMutation } = hymnBooksApi;

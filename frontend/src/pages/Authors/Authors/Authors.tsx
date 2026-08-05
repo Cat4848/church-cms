@@ -10,8 +10,7 @@ import NoContent from "../../../components/NoContent/NoContent.tsx";
 import SearchAndCreate from "../../../components/SearchAndCreate/SearchAndCreate.tsx";
 import { useState } from "react";
 import globalStyles from "../../../css/global.module.css";
-import { authorNameRegexp, invalidAuthorNameErrorMessage } from "../../../lib/constants.ts";
-import styles from "./Authors.module.css";
+import { nameRegexp, invalidNameErrorMessage } from "../../../lib/constants.ts";
 
 const Authors = () => {
   const { data: authors, error: getAllAuthorsError, isLoading } = useGetAllAuthorsQuery();
@@ -24,19 +23,15 @@ const Authors = () => {
   if (isLoading || isCreating || isUpdating) {
     return <Loading />;
   }
-
   if (getAllAuthorsError) {
     return <ErrorFallback error={getAllAuthorsError.toString()} />;
   }
-
   if (createError) {
     return <ErrorFallback error={createError.toString()} />;
   }
-
   if (updateError) {
     return <ErrorFallback error={updateError.toString()} />;
   }
-
   if (authors && !authors.length) {
     return <NoContent entity="Authors" />;
   }
@@ -46,8 +41,8 @@ const Authors = () => {
   };
 
   const handleCreateAuthor = (closeCreateForm: () => void) => {
-    if (!authorNameRegexp.test(newAuthorName)) {
-      setCreateAuthorError(invalidAuthorNameErrorMessage);
+    if (!nameRegexp.test(newAuthorName)) {
+      setCreateAuthorError(invalidNameErrorMessage);
     } else {
       closeCreateForm();
       createAuthor(newAuthorName);
@@ -80,7 +75,7 @@ const Authors = () => {
           <span className={globalStyles["error-box"]}>{createAuthorError && createAuthorError}</span>
         </div>
       </SearchAndCreate>
-      <div className={styles["authors-grid-box"]}>
+      <div className={globalStyles["grid-two-columns"]}>
         {authors &&
           authors.length &&
           authors

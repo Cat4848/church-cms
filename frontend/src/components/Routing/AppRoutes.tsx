@@ -7,6 +7,7 @@ import HymnBooks from "../../pages/HymnBooks/HymnBooks.tsx";
 import Topics from "../../pages/Topics/Topics/Topics.tsx";
 import Labels from "../../pages/Labels/Labels/Labels.tsx";
 import LoginAuthCheck from "./LoginAuthCheck.tsx";
+import Hymns from "../../pages/Hymns/Hymns/Hymns.tsx";
 
 const AppRoutes = () => {
   return (
@@ -20,6 +21,7 @@ const AppRoutes = () => {
         <Route path="/hymn-books" element={<HymnBooks />} />
         <Route path="/topics" element={<Topics />} />
         <Route path="/labels" element={<Labels />} />
+        <Route path="/hymns" element={<Hymns />} />
       </Route>
     </Routes>
   );

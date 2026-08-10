@@ -1,0 +1,11 @@
+export interface Hymn {
+  hymnId: number;
+  authorId: number;
+  authorExtras?: string;
+  title: string;
+  lyrics: string;
+  hymnBookId?: number;
+  numberInHymnBook?: number;
+  topicId?: number;
+  labelId?: number;
+}

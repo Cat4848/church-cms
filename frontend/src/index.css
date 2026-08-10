@@ -2,6 +2,7 @@
   --text: #6b6375;
   --text-h: #08060d;
   --bg: #fff;
+  --create-or-update-form-box-bg: #222222;
   --border: #e5e4e7;
   --code-bg: #f4f3ec;
   --accent: #aa3bff;
@@ -38,7 +39,7 @@
     --text: #9ca3af;
     --text-h: #f3f4f6;
     --bg: #16171d;
-    --border: #2e303a;
+    --border: #1d1d25;
     --code-bg: #1f2028;
     --accent: #c084fc;
     --accent-bg: rgba(192, 132, 252, 0.15);
@@ -65,7 +66,7 @@
 }
 
 body {
-  margin: 0;
+  margin-bottom: 4rem;
 }
 
 h1,
@@ -99,17 +100,17 @@ p {
   margin: 0;
 }
 
-input {
-  outline: none;
+input, textarea, select {
   font-family: var(--sans);
   padding: 0.30rem 0.50rem;
   border: 1px solid var(--social-bg);
   border-radius: var(--input-border-radius);
   transition: 0.35s;
+}
 
-  &:focus {
-    border: 1px solid var(--accent);
-  }
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border: 1px solid var(--accent);
 }
 
 button {

@@ -7,6 +7,7 @@
   <display-name>Church CMS</display-name>
 
   <session-config>
+    <session-timeout>1140</session-timeout> <!-- Value in minutes = 24hrs -->
     <cookie-config>
       <http-only>true</http-only>
       <!--      enable when using https-->

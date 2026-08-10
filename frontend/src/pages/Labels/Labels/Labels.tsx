@@ -7,6 +7,7 @@ import SearchAndCreate from "../../../components/SearchAndCreate/SearchAndCreate
 import { useState } from "react";
 import globalStyles from "../../../css/global.module.css";
 import { nameRegexp, invalidNameErrorMessage } from "../../../lib/constants.ts";
+import MandatoryField from "../../../components/MandatoryField/MandatoryField.tsx";
 
 const Labels = () => {
   const { data: labels, error: getAllLabelsError, isLoading } = useGetAllLabelsQuery();
@@ -49,7 +50,7 @@ const Labels = () => {
     <div>
       <SearchAndCreate
         searchTerm={searchLabelName}
-        onChange={handleEditSearchTerm}
+        onChangeSearchTerm={handleEditSearchTerm}
         entity="Label"
         isCreateButtonDisabled={newLabelName.length < 3 || newLabelName.length > 100}
         isCreateFormValid={!createLabelError}
@@ -58,7 +59,9 @@ const Labels = () => {
       >
         <div className={globalStyles["flex-box-column-center-gap-1"]}>
           <div className={globalStyles["flex-box-center-gap-1"]}>
-            <label htmlFor="label-name">Label Name</label>
+            <label htmlFor="label-name">
+              <MandatoryField /> Label Name
+            </label>
             <input
               id="label-name"
               value={newLabelName}

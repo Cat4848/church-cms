@@ -1,0 +1,309 @@
+import { useGetAllHymnsQuery, useCreateHymnMutation, useUpdateHymnMutation } from "../../../store/api/hymnsApi.ts";
+import Loading from "../../../components/Loading/Loading.tsx";
+import { ErrorFallback } from "../../../components/ErrorBoundary/ErrorBoundary.tsx";
+import NoContent from "../../../components/NoContent/NoContent.tsx";
+import Hymn from "../Hymn/Hymn.tsx";
+import { useGetAllAuthorsQuery } from "../../../store/api/authorsApi.ts";
+import { useGetAllHymnBooksQuery } from "../../../store/api/hymnBooksApi.ts";
+import { useGetAllTopicsQuery } from "../../../store/api/topicsApi.ts";
+import { useGetAllLabelsQuery } from "../../../store/api/labelsApi.ts";
+import type { Author } from "../../../domain/Author.ts";
+import type { HymnBook } from "../../../domain/HymnBook.ts";
+import type { Topic } from "../../../domain/Topic.ts";
+import type { Label } from "../../../domain/Label.ts";
+import type { Hymn as HymnInterface, CreateOrUpdateHymnPayload } from "../../../domain/Hymn.ts";
+import SearchAndCreate from "../../../components/SearchAndCreate/SearchAndCreate.tsx";
+import { useEffect, useState } from "react";
+import styles from "./Hymns.module.css";
+import CreateOrUpdateHymnForm, {
+  FormHelpers,
+} from "../../../components/CreateOrUpdateHymnForm/CreateOrUpdateHymnForm.tsx";
+import { isHymnValid } from "../../../lib/hymn.ts";
+import globalStyles from "../../../css/global.module.css";
+
+const initialCreateHymnForData: CreateOrUpdateHymnPayload = {
+  // initialised as 0 but the isHymnValid marks a hymn invalid if the authorId is still 0
+  // this is done merely to facilitate types for createHymn mutation
+  authorId: 0,
+  authorExtras: undefined,
+  title: "",
+  lyrics: "",
+  hymnBookId: undefined,
+  numberInHymnBook: undefined,
+  topicId: undefined,
+  labelId: undefined,
+};
+
+const Hymns = () => {
+  const { data: authors, isLoading: isAuthorsLoading, error: authorsError } = useGetAllAuthorsQuery();
+  const { data: hymnBooks, isLoading: isHymnBooksError, error: hymnBooksError } = useGetAllHymnBooksQuery();
+  const { data: topics, isLoading: isTopicsLoading, error: topicsError } = useGetAllTopicsQuery();
+  const { data: labels, isLoading: isLabelsLoading, error: labelsError } = useGetAllLabelsQuery();
+
+  const [createHymn, { isLoading: isCreating, error: createError }] = useCreateHymnMutation();
+  const [updateHymn, { isLoading: isUpdating, error: updateError }] = useUpdateHymnMutation();
+
+  const [createHymnFormData, setCreateHymnFormData] = useState<CreateOrUpdateHymnPayload>(initialCreateHymnForData);
+
+  const [searchHymnTerm, setSearchHymnTerm] = useState("");
+  const [isSearchLyrics, setIsSearchLyrics] = useState(false);
+
+  const {
+    data: hymns,
+    error: getAllHymnsError,
+    isLoading,
+  } = useGetAllHymnsQuery(isSearchLyrics ? searchHymnTerm : undefined);
+
+  const [topicFilter, setTopicFilter] = useState<number | undefined>(undefined);
+  const [labelFilter, setLabelFilter] = useState<number | undefined>(undefined);
+  const [hymnBookFilter, setHymnBookFilter] = useState<number | undefined>(undefined);
+
+  const handleSetCreateHymnFormData = (
+    key: keyof CreateOrUpdateHymnPayload,
+    value: CreateOrUpdateHymnPayload[keyof CreateOrUpdateHymnPayload],
+  ): void => {
+    setCreateHymnFormData({
+      ...createHymnFormData,
+      [key]: value,
+    });
+  };
+
+  const initAuthorIdSelectElementValue = () => {
+    const firstAuthor: Author | undefined = authors && authors[0];
+
+    setCreateHymnFormData({
+      ...initialCreateHymnForData,
+      authorId: firstAuthor?.authorId ?? 0,
+    });
+  };
+
+  useEffect(() => {
+    initAuthorIdSelectElementValue();
+  }, [authors, hymnBooks, topics, labels]);
+
+  if (
+    isLoading ||
+    isAuthorsLoading ||
+    isHymnBooksError ||
+    isTopicsLoading ||
+    isLabelsLoading ||
+    isCreating ||
+    isUpdating
+  ) {
+    return <Loading />;
+  }
+  if (!hymns || getAllHymnsError) {
+    return <ErrorFallback error={getAllHymnsError ? getAllHymnsError.toString() : "Error getting Hymns"} />;
+  }
+  if (!authors || authorsError) {
+    return <ErrorFallback error={authorsError ? authorsError.toString() : "Error getting Authors"} />;
+  }
+  if (!hymnBooks || hymnBooksError) {
+    return <ErrorFallback error={hymnBooksError ? hymnBooksError.toString() : "Error getting Hymn Books"} />;
+  }
+  if (!topics || topicsError) {
+    return <ErrorFallback error={topicsError ? topicsError.toString() : "Error getting Topics"} />;
+  }
+  if (!labels || labelsError) {
+    return <ErrorFallback error={labelsError ? labelsError.toString() : "Error getting Labels"} />;
+  }
+  if (createError) {
+    return <ErrorFallback error={createError.toString()} />;
+  }
+  if (updateError) {
+    return <ErrorFallback error={updateError.toString()} />;
+  }
+
+  if (authors && !authors.length) {
+    return <NoContent entity="Authors" />;
+  }
+
+  const handleChangeSearchTerm = (searchTerm: string): void => {
+    // MySQL syntax will be upset if I pass * in the query string for FULLTEXT
+    if (!searchTerm.includes("*")) {
+      setSearchHymnTerm(searchTerm);
+    }
+  };
+
+  const handleCreateHymn = (closeCreateForm: () => void): void => {
+    closeCreateForm();
+    createHymn(createHymnFormData);
+    initAuthorIdSelectElementValue();
+  };
+
+  const handleUpdateHymn = (hymn: HymnInterface) => {
+    updateHymn(hymn);
+  };
+
+  const handleResetCreateState = (): void => {
+    setCreateHymnFormData(initialCreateHymnForData);
+  };
+
+  let filteredHymns: Hymn[] = hymns;
+
+  filteredHymns = filteredHymns.filter((hymn) => {
+    if (topicFilter) {
+      return hymn.topicId === topicFilter;
+    } else {
+      return true;
+    }
+  });
+
+  filteredHymns = filteredHymns.filter((hymn) => {
+    if (labelFilter) {
+      return hymn.labelId === labelFilter;
+    } else {
+      return true;
+    }
+  });
+
+  filteredHymns = filteredHymns.filter((hymn) => {
+    if (hymnBookFilter) {
+      return hymn.hymnBookId === hymnBookFilter;
+    } else {
+      return true;
+    }
+  });
+
+  if (!isSearchLyrics) {
+    filteredHymns = filteredHymns.filter((hymn) => {
+      const searchTerm: string = searchHymnTerm.toLowerCase();
+      if (hymn.title.toLowerCase().includes(searchTerm)) {
+        return true;
+      }
+      const author: Author | undefined = authors.find((a) => a.authorId === hymn.authorId);
+      if (author && author.name.toLowerCase().includes(searchTerm)) {
+        return true;
+      }
+      if (String(hymn.numberInHymnBook) === searchTerm) {
+        return true;
+      }
+      return false;
+    });
+  }
+
+  return (
+    <div>
+      <SearchAndCreate
+        searchTerm={searchHymnTerm}
+        onChangeSearchTerm={handleChangeSearchTerm}
+        entity="Hymn"
+        isCreateButtonDisabled={!isHymnValid(createHymnFormData)}
+        isCreateFormValid={isHymnValid(createHymnFormData)}
+        onCreate={handleCreateHymn}
+        resetCreateState={handleResetCreateState}
+        isSearchLyrics={isSearchLyrics}
+        setIsSearchLyrics={setIsSearchLyrics}
+      >
+        <CreateOrUpdateHymnForm
+          formData={createHymnFormData}
+          setFormData={handleSetCreateHymnFormData}
+          setFormDataRaw={setCreateHymnFormData}
+          authors={authors}
+          hymnBooks={hymnBooks}
+          topics={topics}
+          labels={labels}
+        />
+      </SearchAndCreate>
+      <div className={styles["dropdown-filters"]}>
+        <div className={`${globalStyles["flex-box-column-center"]} ${globalStyles["width-24"]}`}>
+          <label htmlFor={"select-value-topic"}>Topic</label>
+          <select
+            id="select-value-topic"
+            value={topicFilter}
+            onChange={(e) => {
+              setTopicFilter(e.target.value === FormHelpers.Reset ? undefined : Number(e.target.value));
+            }}
+          >
+            <option key="select-value-topic" value={FormHelpers.Reset}>
+              -- Select --
+            </option>
+            {topics.map((topic) => (
+              <option key={topic.topicId} value={topic.topicId}>
+                {topic.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className={`${globalStyles["flex-box-column-center"]} ${globalStyles["width-24"]}`}>
+          <div className={globalStyles["flex-box-column-left"]}>
+            <label htmlFor={"select-value-label"}>Label</label>
+            <select
+              id="select-value-label"
+              value={labelFilter}
+              onChange={(e) => {
+                setLabelFilter(e.target.value === FormHelpers.Reset ? undefined : Number(e.target.value));
+              }}
+            >
+              <option key="select-value-label" value={FormHelpers.Reset}>
+                -- Select --
+              </option>
+              {labels.map((label) => (
+                <option key={label.labelId} value={label.labelId}>
+                  {label.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className={`${globalStyles["flex-box-column-center"]} ${globalStyles["width-24"]}`}>
+          <div className={globalStyles["flex-box-column-left"]}>
+            <label htmlFor={"select-value-hymn-book"}>Hymn Book</label>
+            <select
+              id="select-value-hymn-book"
+              value={hymnBookFilter}
+              onChange={(e) => {
+                setHymnBookFilter(e.target.value === FormHelpers.Reset ? undefined : Number(e.target.value));
+              }}
+            >
+              <option key="select-value-hymn-book" value={FormHelpers.Reset}>
+                -- Select --
+              </option>
+              {hymnBooks.map((hymnBook) => (
+                <option key={hymnBook.hymnBookId} value={hymnBook.hymnBookId}>
+                  {hymnBook.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+      <div className={styles["grid-one-column-for-hymns"]}>
+        {filteredHymns.length ? (
+          filteredHymns.map((hymn) => {
+            const author: Author | undefined = authors.find((a) => a.authorId === hymn.authorId);
+            if (!author) {
+              return <NoContent entity="Authors" />;
+            }
+
+            const hymnBook: HymnBook | undefined = hymnBooks.find((h) => h.hymnBookId === hymn.hymnBookId);
+            const topic: Topic | undefined = topics.find((t) => t.topicId === hymn.topicId);
+            const label: Label | undefined = labels.find((l) => l.labelId === hymn.labelId);
+
+            return (
+              <Hymn
+                key={hymn.hymnId}
+                hymn={hymn}
+                author={author}
+                hymnBook={hymnBook}
+                topic={topic}
+                label={label}
+                authors={authors}
+                hymnBooks={hymnBooks}
+                topics={topics}
+                labels={labels}
+                onUpdateHymn={handleUpdateHymn}
+              />
+            );
+          })
+        ) : (
+          <div>No results...</div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Hymns;

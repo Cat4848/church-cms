@@ -99,7 +99,7 @@ public class HymnAllUseCasesIntegrationTest {
   }
 
   @Test
-  public void ifTopicHymnSuccessfully() throws SQLException {
+  public void ifCreatesHymnSuccessfully() throws SQLException {
     hymnRepository.truncateTable();
 
     CreateHymnPayload payload = new CreateHymnPayload(
@@ -139,6 +139,60 @@ public class HymnAllUseCasesIntegrationTest {
             .statusCode(HttpServletResponse.SC_OK)
             .and()
             .body("title", hasItems(hymn1.getTitle(), hymn2.getTitle()));
+  }
+
+  @Test
+  public void ifItSearchesHymnsByLyricsSuccessfully() throws SQLException {
+    hymnRepository.truncateTable();
+
+    Hymn hymn = new Hymn(
+            createdAuthor.getAuthorId(),
+            "1800-1900",
+            "Be Thou my vision",
+            "Verse 1\n" +
+                    "Be Thou my Vision, O Lord of my heart;\n" +
+                    "Naught be all else to me, save that Thou art\n" +
+                    "Thou my best Thought, by day or by night,\n" +
+                    "Waking or sleeping, Thy presence my light.\n" +
+                    "\n" +
+                    "Verse 2\n" +
+                    "Be Thou my Wisdom, and Thou my true Word;\n" +
+                    "I ever with Thee and Thou with me, Lord;\n" +
+                    "Thou my great Father, I Thy true son;\n" +
+                    "Thou in me dwelling, and I with Thee one.\n" +
+                    "\n" +
+                    "Verse 3\n" +
+                    "Be Thou my battle Shield, Sword for the fight;\n" +
+                    "Be Thou my Dignity, Thou my Delight;\n" +
+                    "Thou my soul's Shelter, Thou my high Tower:\n" +
+                    "Raise Thou me heavenward, O Power of my power.\n" +
+                    "\n" +
+                    "Verse 4\n" +
+                    "Riches I heed not, nor man's empty praise,\n" +
+                    "Thou mine Inheritance, now and always:\n" +
+                    "Thou and Thou only, first in my heart,\n" +
+                    "High King of Heaven, my Treasure Thou art.\n" +
+                    "\n" +
+                    "Verse 5\n" +
+                    "High King of Heaven, my victory won,\n" +
+                    "May I reach Heaven's joys, O bright Heaven's Sun!\n" +
+                    "Heart of my own heart, whatever befall,\n" +
+                    "Still be my Vision, O Ruler of all.",
+            createdHymnBook.getHymnBookId(),
+            10,
+            createdTopic.getTopicId(),
+            createdLabel.getLabelId()
+    );
+    hymnRepository.save(hymn);
+
+    String searchLyrics = "I ever with Thee and Thou with me, Lord;\n" +
+            "Thou my great Father, I Thy true son;";
+    get("/api/hymns?searchLyrics=" + searchLyrics)
+            .then()
+            .assertThat()
+            .statusCode(HttpServletResponse.SC_OK)
+            .and()
+            .body("title", hasItems(hymn.getTitle()));
   }
 
   @Test

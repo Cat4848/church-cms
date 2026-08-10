@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListHymnsUseCase {
@@ -24,10 +25,23 @@ public class ListHymnsUseCase {
   }
 
   public void execute(HttpServletRequest req, HttpServletResponse res) throws SQLException, IOException,
-          StreamWriteException {
+                                                                              StreamWriteException {
     logger.info("start");
 
-    List<Hymn> hymns = hymnRepository.list();
+    String searchLyricsQuery = req.getParameter("searchLyrics");
+
+    logger.debug("get hymns query string {}", searchLyricsQuery);
+
+    List<Hymn> hymns = new ArrayList<>();
+
+    if (searchLyricsQuery == null) {
+      hymns = hymnRepository.list();
+    } else {
+      // MySQL syntax will not be happy if I pass * into FULLTEXT search
+      if (!searchLyricsQuery.contains("*")) {
+        hymns = hymnRepository.list(searchLyricsQuery);
+      }
+    }
 
     res.setContentType("application/json");
     res.setStatus(HttpServletResponse.SC_OK);

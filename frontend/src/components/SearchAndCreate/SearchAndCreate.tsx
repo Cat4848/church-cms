@@ -6,7 +6,7 @@ interface Props {
   searchTerm: string;
   onChange: (searchTerm: string) => void;
   children: JSX.Element;
-  entity: "Author" | "Hymn Book" | "Topic" | "Label";
+  entity: "Author" | "Hymn Book" | "Topic" | "Label" | "Hymn";
   isCreateButtonDisabled?: boolean;
   isCreateFormValid?: boolean;
   onCreate: (closeCreateForm: () => void) => void;

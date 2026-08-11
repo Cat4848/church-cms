@@ -44,3 +44,20 @@
 .width-100 {
   width: 100%;
 }
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+}
+
+.input-group-two-columns {
+  display: grid;
+  grid-template-columns: 4rem 4rem;
+}
+
+label {
+  font-style: italic;
+  font-size: 0.9rem;
+}

@@ -13,9 +13,9 @@ interface Props {
 const Hymn = (props: Props) => {
   return (
     <>
-      <div>
+      <div style={{ textAlign: "start" }}>
         <div>{props.title}</div>
-        <div>{props.authorName}</div>
+        <div style={{ fontStyle: "italic", fontSize: "0.9rem" }}>{props.authorName}</div>
       </div>
       <div>3 dots</div>
     </>

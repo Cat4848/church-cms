@@ -1,0 +1,19 @@
+.lyrics-input-group {
+  width: 100%;
+}
+
+textarea {
+  box-sizing: border-box;
+  height: 10rem;
+  width: 100%;
+  resize: none;
+}
+
+select {
+  width: 80%;
+}
+
+.align-right {
+  align-items: end;
+  text-align: left;
+}

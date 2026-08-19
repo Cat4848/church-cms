@@ -10,11 +10,7 @@ const Loading = () => {
         width: "100vw",
       }}
     >
-      <img
-        src="../../../public/loading-spinner.svg"
-        alt="Loading spinner"
-        style={{ height: "5vh", display: "block" }}
-      />
+      <img src="../../../loading-spinner.svg" alt="Loading spinner" style={{ height: "5vh", display: "block" }} />
     </div>
   );
 };

@@ -14,6 +14,8 @@ import type { Topic } from "../../../domain/Topic.ts";
 import type { Label } from "../../../domain/Label.ts";
 import SearchAndCreate from "../../../components/SearchAndCreate/SearchAndCreate.tsx";
 import { useState } from "react";
+import styles from "./Hymns.module.css";
+import MandatoryField from "../../../components/MandatoryField/MandatoryField.tsx";
 
 const Hymns = () => {
   const { data: hymns, error: getAllHymnsError, isLoading } = useGetAllHymnsQuery();
@@ -21,6 +23,8 @@ const Hymns = () => {
   const { data: hymnBooks, isLoading: isHymnBooksError, error: hymnBooksError } = useGetAllHymnBooksQuery();
   const { data: topics, isLoading: isTopicsLoading, error: topicsError } = useGetAllTopicsQuery();
   const { data: labels, isLoading: isLabelsLoading, error: labelsError } = useGetAllLabelsQuery();
+
+  const [createHymn] = useCreateHymnMutation();
 
   const [searchHymnTerm, setSearchHymnTerm] = useState("");
 
@@ -32,6 +36,28 @@ const Hymns = () => {
   const [numberInHymnBook, setNumberInHymnBook] = useState(0);
   const [topicId, setTopicId] = useState(0);
   const [labelId, setLabelId] = useState(0);
+
+  type CreateHymnPayload = {
+    authorId: number | null;
+    authorExtras: string;
+    title: string;
+    lyrics: string;
+    hymnBookId: number | null;
+    numberInHymnBook: number | null;
+    topicId: number | null;
+    labelId: number | null;
+  };
+
+  const [formData, setFormData] = useState<CreateHymnPayload>({
+    authorId: null,
+    authorExtras: "",
+    title: "",
+    lyrics: "",
+    hymnBookId: null,
+    numberInHymnBook: null,
+    topicId: null,
+    labelId: null,
+  });
 
   // todo: add loading for all entities
   if (isLoading || isAuthorsLoading || isHymnBooksError || isTopicsLoading || isLabelsLoading) {
@@ -74,8 +100,20 @@ const Hymns = () => {
     setSearchHymnTerm(searchTerm);
   };
 
-  const handleCreateHymn = () => {};
+  const handleCreateHymn = () => {
+    // I can validate here and create a hymn
+    createHymn(formData);
+  };
+
+  const validateCreateHymnPayload = () => {};
   const handleResetHymnFormState = () => {};
+
+  const setHymnFormData = (key: keyof CreateHymnPayload, value: CreateHymnPayload[keyof CreateHymnPayload]) => {
+    setFormData({
+      ...formData,
+      [key]: value,
+    });
+  };
 
   return (
     <div>
@@ -88,75 +126,100 @@ const Hymns = () => {
         onCreate={handleCreateHymn}
         resetCreateState={handleResetHymnFormState}
       >
-        <div className={globalStyles["flex-box-column-center-gap-1"]}>
-          {/*<div className={globalStyles["flex-box-center-gap-1"]}>*/}
-          <div className={globalStyles["input-group-two-columns"]}>
+        <>
+          <div className={globalStyles["input-group-grid-two-columns"]}>
             <div className={globalStyles["input-group"]}>
-              <label htmlFor="author-id">Author</label>
-              <select id="author-id" onChange={(e) => setAuthorId(Number(e.target.value))}>
+              <label htmlFor="author-id">
+                <MandatoryField /> Author
+              </label>
+              <select id="author-id" onChange={(e) => setHymnFormData("authorId", Number(e.target.value))}>
                 {authors.map((author) => (
                   <option value={author.authorId}>{author.name}</option>
                 ))}
               </select>
             </div>
 
-            <div className={globalStyles["input-group"]}>
-              <label htmlFor="author-extras">Author Extras</label>
-              <input id="author-extras" value={authorExtras} onChange={(e) => setAuthorExtras(e.target.value)} />
+            <div className={`${globalStyles["input-group"]} ${styles["align-right"]}`}>
+              <div className={`${globalStyles["input-group"]}`}>
+                <label htmlFor="author-extras">Author Extras</label>
+                <input
+                  id="author-extras"
+                  value={formData.authorExtras}
+                  onChange={(e) => setHymnFormData("authorExtras", e.target.value)}
+                />
+              </div>
             </div>
           </div>
 
-          <div className={globalStyles["input-group-two-columns"]}>
-            <div className={globalStyles["input-group"]}>
-              <label id="hymn-title">Title</label>
-              <input id="hymn-title" value={hymnTitle} onChange={(e) => setHymnTitle(e.target.value)} />
-            </div>
-
+          <div className={globalStyles["input-group-grid-two-columns"]}>
             <div className={globalStyles["input-group"]}>
               <label htmlFor="hymn-book">Hymn Book</label>
-              <select id="hymn-book" onChange={(e) => setHymnBookId(Number(e.target.value))}>
+              <select id="hymn-book" onChange={(e) => setHymnFormData("hymnBookId", Number(e.target.value))}>
                 {hymnBooks.map((hymnBook) => (
                   <option value={hymnBook.hymnBookId}>{hymnBook.name}</option>
                 ))}
               </select>
             </div>
+
+            <div className={`${globalStyles["input-group"]} ${styles["align-right"]}`}>
+              <div className={globalStyles["input-group"]}>
+                <label id="hymn-title">
+                  <MandatoryField /> Title
+                </label>
+                <input
+                  id="hymn-title"
+                  value={formData.title}
+                  onChange={(e) => setHymnFormData("title", e.target.value)}
+                />
+              </div>
+            </div>
           </div>
 
-          <div className={globalStyles["input-group-two-columns"]}>
-            <div className={globalStyles["input-group"]}>
-              <label htmlFor="number-in-hymn-book">Number in Hymn Book</label>
-              <input
-                id="number-in-hymn-book"
-                value={numberInHymnBook}
-                onChange={(e) => setNumberInHymnBook(Number(e.target.value))}
-              />
-            </div>
-
+          <div className={globalStyles["input-group-grid-two-columns"]}>
             <div className={globalStyles["input-group"]}>
               <label htmlFor="topic">Topic</label>
-              <select id="topic" onChange={(e) => setTopicId(Number(e.target.value))}>
+              <select id="topic" onChange={(e) => setHymnFormData("topicId", Number(e.target.value))}>
                 {topics.map((topic) => (
                   <option value={topic.topicId}>{topic.name}</option>
                 ))}
               </select>
             </div>
+
+            <div className={`${globalStyles["input-group"]} ${styles["align-right"]}`}>
+              <div className={globalStyles["input-group"]}>
+                <label htmlFor="number-in-hymn-book">Number in Hymn Book</label>
+                <input
+                  id="number-in-hymn-book"
+                  type="number"
+                  value={formData.numberInHymnBook ?? 0}
+                  onChange={(e) => setHymnFormData("numberInHymnBook", Number(e.target.value))}
+                />
+              </div>
+            </div>
           </div>
 
-          <div className={globalStyles["input-group"]}>
-            <label htmlFor="label">Label</label>
-            <option id="label" onChange={(e) => setLabelId(Number(e.target.value))}>
-              {labels.map((label) => (
-                <option value={label.labelId}>{label.name}</option>
-              ))}
-            </option>
+          <div className={globalStyles["input-group-grid-two-columns"]}>
+            <div className={globalStyles["input-group"]}>
+              <label htmlFor="label">Label</label>
+              <select id="label" onChange={(e) => setHymnFormData("labelId", Number(e.target.value))}>
+                {labels.map((label) => (
+                  <option value={label.labelId}>{label.name}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          <div className={globalStyles["input-group"]}>
-            <label htmlFor="hymn-lyrics">Lyrics</label>
-            <textarea id="hymn-lyrics" value={hymnLyrics} onChange={(e) => setHymnLyrics(e.target.value)} />
+          <div className={`${globalStyles["input-group"]} ${styles["lyrics-input-group"]}`}>
+            <label htmlFor="hymn-lyrics">
+              <MandatoryField /> Lyrics
+            </label>
+            <textarea
+              id="hymn-lyrics"
+              value={formData.lyrics}
+              onChange={(e) => setHymnFormData("lyrics", e.target.value)}
+            />
           </div>
-          {/*</div>*/}
-        </div>
+        </>
       </SearchAndCreate>
       <div className={globalStyles["grid-two-columns"]}>
         {hymns &&

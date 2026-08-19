@@ -99,17 +99,17 @@ p {
   margin: 0;
 }
 
-input {
-  outline: none;
+input, textarea, select {
   font-family: var(--sans);
   padding: 0.30rem 0.50rem;
   border: 1px solid var(--social-bg);
   border-radius: var(--input-border-radius);
   transition: 0.35s;
+}
 
-  &:focus {
-    border: 1px solid var(--accent);
-  }
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border: 1px solid var(--accent);
 }
 
 button {

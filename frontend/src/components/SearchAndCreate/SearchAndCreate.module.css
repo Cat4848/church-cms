@@ -6,11 +6,11 @@
 }
 
 .create-box {
-  margin-top: 1rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-top: 1rem;
   background-color: #222222;
   width: 70%;
   padding: 1rem;

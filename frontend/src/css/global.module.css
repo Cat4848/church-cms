@@ -52,9 +52,9 @@
   align-items: start;
 }
 
-.input-group-two-columns {
+.input-group-grid-two-columns {
   display: grid;
-  grid-template-columns: 4rem 4rem;
+  grid-template-columns: 12rem 12rem;
 }
 
 label {

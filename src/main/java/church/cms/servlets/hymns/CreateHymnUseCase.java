@@ -62,6 +62,8 @@ public class CreateHymnUseCase {
         throw new IllegalArgumentException("An error occurred while creating a new Hymn. Error message is: " + sb);
       }
 
+      logger.debug("create hymn payload = {}", payload.toString());
+
       Hymn hymn = new Hymn(
               payload.authorId(),
               payload.authorExtras(),

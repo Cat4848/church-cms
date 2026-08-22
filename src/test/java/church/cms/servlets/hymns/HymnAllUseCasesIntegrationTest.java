@@ -99,7 +99,7 @@ public class HymnAllUseCasesIntegrationTest {
   }
 
   @Test
-  public void ifTopicHymnSuccessfully() throws SQLException {
+  public void ifCreatesHymnSuccessfully() throws SQLException {
     hymnRepository.truncateTable();
 
     CreateHymnPayload payload = new CreateHymnPayload(

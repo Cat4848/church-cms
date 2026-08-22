@@ -41,6 +41,10 @@ const initialForData: CreateHymnPayload = {
   labelId: undefined,
 };
 
+enum FormHelpers {
+  Reset = "Reset",
+}
+
 const Hymns = () => {
   const { data: hymns, error: getAllHymnsError, isLoading } = useGetAllHymnsQuery();
   const { data: authors, isLoading: isAuthorsLoading, error: authorsError } = useGetAllAuthorsQuery();
@@ -61,23 +65,17 @@ const Hymns = () => {
     });
   };
 
-  const initSelectElementsInCreateHymnFormData = () => {
+  const initAuthorIdSelectElementValue = () => {
     const firstAuthor: Author | undefined = authors && authors[0];
-    const firstHymnBook: HymnBook | undefined = hymnBooks && hymnBooks[0];
-    const firstTopic: Topic | undefined = topics && topics[0];
-    const firstLabel: Label | undefined = labels && labels[0];
 
     setCreateHymnFormData({
       ...initialForData,
       authorId: firstAuthor?.authorId ?? 0,
-      hymnBookId: firstHymnBook?.hymnBookId,
-      topicId: firstTopic?.topicId,
-      labelId: firstLabel?.labelId,
     });
   };
 
   useEffect(() => {
-    initSelectElementsInCreateHymnFormData();
+    initAuthorIdSelectElementValue();
   }, [authors, hymnBooks, topics, labels]);
 
   // todo: add loading for all entities
@@ -127,7 +125,7 @@ const Hymns = () => {
   const handleCreateHymn = (closeCreateForm: () => void): void => {
     closeCreateForm();
     createHymn(createHymnFormData);
-    initSelectElementsInCreateHymnFormData();
+    initAuthorIdSelectElementValue();
   };
 
   const isHymnValid = (): boolean => {
@@ -194,7 +192,19 @@ const Hymns = () => {
           <div className={globalStyles["input-group-grid-two-columns"]}>
             <div className={globalStyles["input-group"]}>
               <label htmlFor="hymn-book">Hymn Book</label>
-              <select id="hymn-book" onChange={(e) => setHymnFormData("hymnBookId", Number(e.target.value))}>
+              <select
+                id="hymn-book"
+                onChange={(e) => {
+                  if (e.target.value === FormHelpers.Reset) {
+                    setCreateHymnFormData({ ...createHymnFormData, hymnBookId: undefined });
+                  } else {
+                    setHymnFormData("hymnBookId", Number(e.target.value));
+                  }
+                }}
+              >
+                <option key="select-value-hymn-book" value={FormHelpers.Reset}>
+                  -- Select --
+                </option>
                 {hymnBooks.map((hymnBook) => (
                   <option key={hymnBook.hymnBookId} value={hymnBook.hymnBookId}>
                     {hymnBook.name}
@@ -220,7 +230,19 @@ const Hymns = () => {
           <div className={globalStyles["input-group-grid-two-columns"]}>
             <div className={globalStyles["input-group"]}>
               <label htmlFor="topic">Topic</label>
-              <select id="topic" onChange={(e) => setHymnFormData("topicId", Number(e.target.value))}>
+              <select
+                id="topic"
+                onChange={(e) => {
+                  if (e.target.value === FormHelpers.Reset) {
+                    setCreateHymnFormData({ ...createHymnFormData, topicId: undefined });
+                  } else {
+                    setHymnFormData("topicId", Number(e.target.value));
+                  }
+                }}
+              >
+                <option key="select-value-topic" value={FormHelpers.Reset}>
+                  -- Select --
+                </option>
                 {topics.map((topic) => (
                   <option key={topic.topicId} value={topic.topicId}>
                     {topic.name}
@@ -247,7 +269,19 @@ const Hymns = () => {
           <div className={globalStyles["input-group-grid-two-columns"]}>
             <div className={globalStyles["input-group"]}>
               <label htmlFor="label">Label</label>
-              <select id="label" onChange={(e) => setHymnFormData("labelId", Number(e.target.value))}>
+              <select
+                id="label"
+                onChange={(e) => {
+                  if (e.target.value === FormHelpers.Reset) {
+                    setCreateHymnFormData({ ...createHymnFormData, labelId: undefined });
+                  } else {
+                    setHymnFormData("labelId", Number(e.target.value));
+                  }
+                }}
+              >
+                <option key="select-value-hymn-topic" value={FormHelpers.Reset}>
+                  -- Select --
+                </option>
                 {labels.map((label) => (
                   <option key={label.labelId} value={label.labelId}>
                     {label.name}

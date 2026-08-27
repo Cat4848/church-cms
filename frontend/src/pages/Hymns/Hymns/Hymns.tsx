@@ -313,19 +313,9 @@ const Hymns = () => {
             }
 
             const hymnBook: HymnBook | undefined = hymnBooks.find((h) => h.hymnBookId === hymn.hymnBookId);
-            if (!hymnBook) {
-              return <NoContent entity="Hymn Book" />;
-            }
-
             const topic: Topic | undefined = topics.find((t) => t.topicId === hymn.topicId);
-            if (!topic) {
-              return <NoContent entity="Topic" />;
-            }
-
             const label: Label | undefined = labels.find((l) => l.labelId === hymn.labelId);
-            if (!label) {
-              return <NoContent entity="Label" />;
-            }
+
             return (
               <Hymn
                 key={hymn.hymnId}
@@ -334,10 +324,10 @@ const Hymns = () => {
                 authorExtras={hymn.authorExtras}
                 title={hymn.title}
                 lyrics={hymn.lyrics}
-                hymnBookName={hymnBook.name}
-                numberInHymnBook={hymn.numberInHymnBook}
-                topicName={topic.name}
-                labelName={label.name}
+                hymnBookName={hymnBook ? hymnBook.name : "–"}
+                numberInHymnBook={hymnBook ? hymn.numberInHymnBook : "–"}
+                topicName={topic ? topic.name : "–"}
+                labelName={label ? label.name : "–"}
               />
             );
           })}

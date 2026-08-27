@@ -3,7 +3,7 @@ interface Props {
 }
 
 const NoContent = ({ entity }: Props) => {
-  return <h2>`No ${entity} here yet.`</h2>;
+  return <h2>{`No ${entity} here yet.`}</h2>;
 };
 
 export default NoContent;

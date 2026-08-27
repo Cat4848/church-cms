@@ -1,0 +1,16 @@
+.hymn-heading {
+  display: flex;
+  border: 2px solid #1d1d25;
+  border-radius: var(--input-border-radius);
+  box-shadow: #1d1d25 0 0 8px 0;
+  padding: 0.25rem;
+}
+
+.chevron {
+  display: flex;
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  padding: 0.35rem;
+}

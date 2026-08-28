@@ -21,6 +21,7 @@ const chevronDown: JSX.Element = <img height={20} src="../../../../public/chevro
 const Hymn = (props: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMenuExpanded, setIsMenuExpanded] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
 
   const handleCopyLyrics = async () => {
     try {
@@ -31,7 +32,14 @@ const Hymn = (props: Props) => {
     setIsMenuExpanded(false);
   };
 
-  return (
+  const handleUpdateHymn = () => {
+    setIsExpanded(true);
+    setIsEdit(true);
+  };
+
+  return isEdit ? (
+    <div className={styles["grid-in-foldable"]}></div>
+  ) : (
     <div>
       <div className={`${styles["hymn-heading"]} ${globalStyles["text-align-left"]}`}>
         <div className={styles["title-and-author"]}>
@@ -52,7 +60,9 @@ const Hymn = (props: Props) => {
               <div className={styles["menu-item"]} onClick={handleCopyLyrics}>
                 Copy Lyrics
               </div>
-              <div className={styles["menu-item"]}>Update</div>
+              <div className={styles["menu-item"]} onClick={handleUpdateHymn}>
+                Update
+              </div>
             </div>
           )}
         </div>

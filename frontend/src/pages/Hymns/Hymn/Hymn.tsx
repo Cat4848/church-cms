@@ -56,6 +56,7 @@ const Hymn = (props: Props) => {
             <span>Label:</span>
             <span className={globalStyles["text-bold"]}>{props.labelName}</span>
           </div>
+          {/*this column is fake so that the lyrics can be on their own row*/}
           <div></div>
           <div className={`${styles["sections-in-foldable"]} ${styles["lyrics-in-foldable"]}`}>
             <span>Lyrics:</span>

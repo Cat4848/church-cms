@@ -1,3 +1,8 @@
+:root {
+  --content-bg: #1c1c27;
+  --border-color-for-content-bg: #20202e;
+}
+
 .hymn-heading {
   display: flex;
   justify-content: space-between;
@@ -28,14 +33,46 @@
   font-size: 0.9rem;
 }
 
+.menu-dots {
+  cursor: pointer;
+  position: relative;
+  border: 2px greenyellow;
+}
+
+.hymn-menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem;
+  position: absolute;
+  z-index: 1;
+  top: -1rem;
+  left: 2em;
+  padding: 0.15rem;
+  height: 6rem;
+  width: 7.5rem;
+  background-color: var(--content-bg);
+  border-radius: var(--input-border-radius);
+  cursor: default;
+  border: 2px solid var(--border-color-for-content-bg);
+  box-shadow: var(--border) 0 0 8px 0;
+}
+
+.menu-item {
+  &:hover {
+    background-color: white;
+  }
+}
+
 .grid-in-foldable {
   display: grid;
   grid-template-columns: 14rem 14rem;
   row-gap: 0.5rem;
   justify-content: center;
   align-items: center;
-  background-color: #1c1c27;
-  border: 2px solid #20202e;
+  background-color: var(--content-bg);
+  border: 2px solid var(--border-color-for-content-bg);
   border-radius: var(--input-border-radius);
   box-shadow: var(--border) 0 0 8px 0;
 }

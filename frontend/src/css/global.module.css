@@ -41,6 +41,10 @@
   text-align: left;
 }
 
+.text-bold {
+  font-weight: bold;
+}
+
 .width-100 {
   width: 100%;
 }

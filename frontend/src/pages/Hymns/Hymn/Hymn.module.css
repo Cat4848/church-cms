@@ -1,8 +1,11 @@
 .hymn-heading {
   display: flex;
-  border: 2px solid #1d1d25;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  border: 2px solid var(--border);
   border-radius: var(--input-border-radius);
-  box-shadow: #1d1d25 0 0 8px 0;
+  box-shadow: var(--border) 0 0 8px 0;
   padding: 0.25rem;
 }
 
@@ -13,4 +16,14 @@
   align-items: center;
   border-radius: 50%;
   padding: 0.35rem;
+}
+
+.title-and-author {
+  display: flex;
+  gap: 0.4rem
+}
+
+.author {
+  font-style: italic;
+  font-size: 0.9rem;
 }

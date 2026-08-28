@@ -17,3 +17,12 @@ select {
   align-items: end;
   text-align: left;
 }
+
+.grid-one-column-for-hymns {
+  display: grid;
+  grid-template-columns: 30rem;
+  justify-content: center;
+  column-gap: 2rem;
+  row-gap: 2rem;
+  margin-top: 4rem;
+}

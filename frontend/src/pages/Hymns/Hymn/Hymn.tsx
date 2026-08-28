@@ -1,5 +1,6 @@
 import { type JSX, useState } from "react";
 import styles from "./Hymn.module.css";
+import globalStyles from "../../../css/global.module.css";
 
 interface Props {
   hymnId: number;
@@ -20,48 +21,48 @@ const Hymn = (props: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <>
-      <div style={{ textAlign: "start" }}>
-        <div className={styles["hymn-heading"]}>
+    <div className={globalStyles["text-align-left"]}>
+      <div className={styles["hymn-heading"]}>
+        <div className={styles["title-and-author"]}>
           <div className={styles["chevron"]} onClick={() => setIsExpanded(!isExpanded)}>
             {isExpanded ? chevronRight : chevronDown}
           </div>
           <div>
             <div>{props.title}</div>
-            <div style={{ fontStyle: "italic", fontSize: "0.9rem" }}>{props.authorName}</div>
+            <div className={styles["author"]}>{props.authorName}</div>
           </div>
         </div>
-        {isExpanded && (
-          <div>
-            <div>
-              <span>Author Extras</span>
-              {props.authorExtras}
-            </div>
-            <div>
-              <span>Hymn Book</span>
-              {props.hymnBookName}
-            </div>
-            <div>
-              <span>Number in Hymn Book</span>
-              {props.numberInHymnBook}
-            </div>
-            <div>
-              <span>Topic</span>
-              {props.topicName}
-            </div>
-            <div>
-              <span>Label</span>
-              {props.labelName}
-            </div>
-            <div style={{ whiteSpace: "pre-wrap" }}>
-              <span>Lyrics</span>
-              {props.lyrics}
-            </div>
-          </div>
-        )}
+        <div>3 dots</div>
       </div>
-      <div>3 dots</div>
-    </>
+      {isExpanded && (
+        <div>
+          <div>
+            <span>Author Extras</span>
+            {props.authorExtras}
+          </div>
+          <div>
+            <span>Hymn Book</span>
+            {props.hymnBookName}
+          </div>
+          <div>
+            <span>Number in Hymn Book</span>
+            {props.numberInHymnBook}
+          </div>
+          <div>
+            <span>Topic</span>
+            {props.topicName}
+          </div>
+          <div>
+            <span>Label</span>
+            {props.labelName}
+          </div>
+          <div style={{ whiteSpace: "pre-wrap" }}>
+            <span>Lyrics</span>
+            {props.lyrics}
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

@@ -303,7 +303,7 @@ const Hymns = () => {
           </div>
         </>
       </SearchAndCreate>
-      <div className={globalStyles["grid-two-columns"]}>
+      <div className={styles["grid-one-column-for-hymns"]}>
         {hymns &&
           hymns.length &&
           hymns.map((hymn) => {

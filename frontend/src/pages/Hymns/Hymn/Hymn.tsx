@@ -28,7 +28,6 @@ const chevronRight: JSX.Element = <img height={20} src="../../../../public/chevr
 const chevronDown: JSX.Element = <img height={20} src="../../../../public/chevron-down.svg" alt="chevron-down" />;
 
 const Hymn = (props: Props) => {
-  // controlled only from the HymnHeading component
   const [isHeadingExpanded, setIsHeadingExpanded] = useState(false);
   const [isUpdatingHymn, setIsUpdatingHymn] = useState(false);
   const updateHymnFormDataStateFromProps: CreateHymnPayload = useMemo((): CreateHymnPayload => {
@@ -91,7 +90,14 @@ const Hymn = (props: Props) => {
       />
       <div className={styles["update-hymn-box"]}>
         <div className={searchAndCreateStyles["close-button-box"]}>
-          <span onClick={() => setIsUpdatingHymn(false)}>⛌</span>
+          <span
+            onClick={() => {
+              setIsUpdatingHymn(false);
+              setIsHeadingExpanded(false);
+            }}
+          >
+            ⛌
+          </span>
         </div>
         <CreateAndUpdateHymnForm
           hymnId={props.hymn.hymnId}

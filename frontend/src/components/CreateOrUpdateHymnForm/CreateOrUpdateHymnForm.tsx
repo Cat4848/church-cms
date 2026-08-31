@@ -1,9 +1,7 @@
 import globalStyles from "../../css/global.module.css";
 import MandatoryField from "../MandatoryField/MandatoryField.tsx";
-// todo: move all styles to their own file for this component
-import styles from "../../pages/Hymns/Hymns/Hymns.module.css";
-import type { CreateHymnPayload } from "../../pages/Hymns/Hymns/Hymns.tsx";
-import { FormHelpers } from "../../pages/Hymns/Hymns/Hymns.tsx";
+import styles from "./CreateOrUpdateHymnForm.module.css";
+import { type CreateOrUpdateHymnPayload } from "../../domain/Hymn.ts";
 import type { Author } from "../../domain/Author.ts";
 import type { HymnBook } from "../../domain/HymnBook.ts";
 import type { Topic } from "../../domain/Topic.ts";
@@ -11,19 +9,24 @@ import type { Label } from "../../domain/Label.ts";
 import type { Dispatch, SetStateAction } from "react";
 
 interface Props {
-  // todo: change the name of the interface to CreateOrUpdateHymnPayload
-  // todo: change the filename and dir name for this component to OR from AND
   hymnId?: number;
-  formData: CreateHymnPayload;
-  setFormData: (key: keyof CreateHymnPayload, value: CreateHymnPayload[keyof CreateHymnPayload]) => void;
-  setFormDataRaw: Dispatch<SetStateAction<CreateHymnPayload>>;
+  formData: CreateOrUpdateHymnPayload;
+  setFormData: (
+    key: keyof CreateOrUpdateHymnPayload,
+    value: CreateOrUpdateHymnPayload[keyof CreateOrUpdateHymnPayload],
+  ) => void;
+  setFormDataRaw: Dispatch<SetStateAction<CreateOrUpdateHymnPayload>>;
   authors: Author[];
   hymnBooks: HymnBook[];
   topics: Topic[];
   labels: Label[];
 }
 
-const CreateAndUpdateHymnForm = (props: Props) => {
+export enum FormHelpers {
+  Reset = "Reset",
+}
+
+const CreateOrUpdateHymnForm = (props: Props) => {
   return (
     <>
       <div className={globalStyles["input-group-grid-two-columns"]}>
@@ -188,4 +191,4 @@ const CreateAndUpdateHymnForm = (props: Props) => {
   );
 };
 
-export default CreateAndUpdateHymnForm;
+export default CreateOrUpdateHymnForm;

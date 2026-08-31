@@ -2,7 +2,6 @@ import { useGetAllHymnsQuery, useCreateHymnMutation, useUpdateHymnMutation } fro
 import Loading from "../../../components/Loading/Loading.tsx";
 import { ErrorFallback } from "../../../components/ErrorBoundary/ErrorBoundary.tsx";
 import NoContent from "../../../components/NoContent/NoContent.tsx";
-import globalStyles from "../../../css/global.module.css";
 import Hymn from "../Hymn/Hymn.tsx";
 import { useGetAllAuthorsQuery } from "../../../store/api/authorsApi.ts";
 import { useGetAllHymnBooksQuery } from "../../../store/api/hymnBooksApi.ts";
@@ -12,24 +11,13 @@ import type { Author } from "../../../domain/Author.ts";
 import type { HymnBook } from "../../../domain/HymnBook.ts";
 import type { Topic } from "../../../domain/Topic.ts";
 import type { Label } from "../../../domain/Label.ts";
-import type { Hymn as HymnInterface } from "../../../domain/Hymn.ts";
+import type { Hymn as HymnInterface, CreateOrUpdateHymnPayload } from "../../../domain/Hymn.ts";
 import SearchAndCreate from "../../../components/SearchAndCreate/SearchAndCreate.tsx";
 import { useEffect, useState } from "react";
 import styles from "./Hymns.module.css";
-import MandatoryField from "../../../components/MandatoryField/MandatoryField.tsx";
+import CreateOrUpdateHymnForm from "../../../components/CreateOrUpdateHymnForm/CreateOrUpdateHymnForm.tsx";
 
-export interface CreateHymnPayload {
-  authorId: number;
-  authorExtras?: string;
-  title: string;
-  lyrics: string;
-  hymnBookId?: number;
-  numberInHymnBook?: number;
-  topicId?: number;
-  labelId?: number;
-}
-
-const initialForData: CreateHymnPayload = {
+const initialCreateHymnForData: CreateOrUpdateHymnPayload = {
   // initialised as 0 but the isHymnValid marks a hymn invalid if the authorId is still 0
   // this is done merely to facilitate types for createHymn mutation
   authorId: 0,
@@ -42,10 +30,6 @@ const initialForData: CreateHymnPayload = {
   labelId: undefined,
 };
 
-export enum FormHelpers {
-  Reset = "Reset",
-}
-
 const Hymns = () => {
   const { data: hymns, error: getAllHymnsError, isLoading } = useGetAllHymnsQuery();
   const { data: authors, isLoading: isAuthorsLoading, error: authorsError } = useGetAllAuthorsQuery();
@@ -56,11 +40,14 @@ const Hymns = () => {
   const [createHymn, { isLoading: isCreating, error: createError }] = useCreateHymnMutation();
   const [updateHymn, { isLoading: isUpdating, error: updateError }] = useUpdateHymnMutation();
 
-  const [createHymnFormData, setCreateHymnFormData] = useState<CreateHymnPayload>(initialForData);
+  const [createHymnFormData, setCreateHymnFormData] = useState<CreateOrUpdateHymnPayload>(initialCreateHymnForData);
 
   const [searchHymnTerm, setSearchHymnTerm] = useState("");
 
-  const setHymnFormData = (key: keyof CreateHymnPayload, value: CreateHymnPayload[keyof CreateHymnPayload]): void => {
+  const handleSetCreateHymnFormData = (
+    key: keyof CreateOrUpdateHymnPayload,
+    value: CreateOrUpdateHymnPayload[keyof CreateOrUpdateHymnPayload],
+  ): void => {
     setCreateHymnFormData({
       ...createHymnFormData,
       [key]: value,
@@ -71,7 +58,7 @@ const Hymns = () => {
     const firstAuthor: Author | undefined = authors && authors[0];
 
     setCreateHymnFormData({
-      ...initialForData,
+      ...initialCreateHymnForData,
       authorId: firstAuthor?.authorId ?? 0,
     });
   };
@@ -165,7 +152,7 @@ const Hymns = () => {
   };
 
   const handleResetCreateState = (): void => {
-    setCreateHymnFormData(initialForData);
+    setCreateHymnFormData(initialCreateHymnForData);
   };
 
   return (
@@ -179,158 +166,15 @@ const Hymns = () => {
         onCreate={handleCreateHymn}
         resetCreateState={handleResetCreateState}
       >
-        <>
-          <div className={globalStyles["input-group-grid-two-columns"]}>
-            <div className={globalStyles["input-group"]}>
-              <label htmlFor="author-id">
-                <MandatoryField /> Author
-              </label>
-              <select id="author-id" onChange={(e) => setHymnFormData("authorId", Number(e.target.value))}>
-                {authors.map((author) => (
-                  <option key={author.authorId} value={author.authorId}>
-                    {author.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className={`${globalStyles["input-group"]} ${styles["align-right"]}`}>
-              <div className={`${globalStyles["input-group"]}`}>
-                <label htmlFor="author-extras">Author Extras</label>
-                <input
-                  id="author-extras"
-                  value={createHymnFormData.authorExtras}
-                  onChange={(e) => {
-                    if (e.target.value === "") {
-                      setCreateHymnFormData({ ...createHymnFormData, authorExtras: undefined });
-                    } else {
-                      setHymnFormData("authorExtras", e.target.value);
-                    }
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className={globalStyles["input-group-grid-two-columns"]}>
-            <div className={globalStyles["input-group"]}>
-              <label htmlFor="hymn-book">Hymn Book</label>
-              <select
-                id="hymn-book"
-                onChange={(e) => {
-                  if (e.target.value === FormHelpers.Reset) {
-                    setCreateHymnFormData({ ...createHymnFormData, hymnBookId: undefined });
-                  } else {
-                    setHymnFormData("hymnBookId", Number(e.target.value));
-                  }
-                }}
-              >
-                <option key="select-value-hymn-book" value={FormHelpers.Reset}>
-                  -- Select --
-                </option>
-                {hymnBooks.map((hymnBook) => (
-                  <option key={hymnBook.hymnBookId} value={hymnBook.hymnBookId}>
-                    {hymnBook.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className={`${globalStyles["input-group"]} ${styles["align-right"]}`}>
-              <div className={globalStyles["input-group"]}>
-                <label id="hymn-title">
-                  <MandatoryField /> Title
-                </label>
-                <input
-                  id="hymn-title"
-                  value={createHymnFormData.title}
-                  onChange={(e) => setHymnFormData("title", e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className={globalStyles["input-group-grid-two-columns"]}>
-            <div className={globalStyles["input-group"]}>
-              <label htmlFor="topic">Topic</label>
-              <select
-                id="topic"
-                onChange={(e) => {
-                  if (e.target.value === FormHelpers.Reset) {
-                    setCreateHymnFormData({ ...createHymnFormData, topicId: undefined });
-                  } else {
-                    setHymnFormData("topicId", Number(e.target.value));
-                  }
-                }}
-              >
-                <option key="select-value-topic" value={FormHelpers.Reset}>
-                  -- Select --
-                </option>
-                {topics.map((topic) => (
-                  <option key={topic.topicId} value={topic.topicId}>
-                    {topic.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className={`${globalStyles["input-group"]} ${styles["align-right"]}`}>
-              <div className={globalStyles["input-group"]}>
-                <label htmlFor="number-in-hymn-book">Number in Hymn Book</label>
-                <input
-                  id="number-in-hymn-book"
-                  type="number"
-                  step="1"
-                  min="0"
-                  value={createHymnFormData.numberInHymnBook ?? ""}
-                  onChange={(e) => {
-                    if (Number(e.target.value) === 0) {
-                      setCreateHymnFormData({ ...createHymnFormData, numberInHymnBook: undefined });
-                    } else {
-                      setHymnFormData("numberInHymnBook", Number(e.target.value));
-                    }
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className={globalStyles["input-group-grid-two-columns"]}>
-            <div className={globalStyles["input-group"]}>
-              <label htmlFor="label">Label</label>
-              <select
-                id="label"
-                onChange={(e) => {
-                  if (e.target.value === FormHelpers.Reset) {
-                    setCreateHymnFormData({ ...createHymnFormData, labelId: undefined });
-                  } else {
-                    setHymnFormData("labelId", Number(e.target.value));
-                  }
-                }}
-              >
-                <option key="select-value-hymn-topic" value={FormHelpers.Reset}>
-                  -- Select --
-                </option>
-                {labels.map((label) => (
-                  <option key={label.labelId} value={label.labelId}>
-                    {label.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className={`${globalStyles["input-group"]} ${styles["lyrics-input-group"]}`}>
-            <label htmlFor="hymn-lyrics">
-              <MandatoryField /> Lyrics
-            </label>
-            <textarea
-              id="hymn-lyrics"
-              value={createHymnFormData.lyrics}
-              onChange={(e) => setHymnFormData("lyrics", e.target.value)}
-            />
-          </div>
-        </>
+        <CreateOrUpdateHymnForm
+          formData={createHymnFormData}
+          setFormData={handleSetCreateHymnFormData}
+          setFormDataRaw={setCreateHymnFormData}
+          authors={authors}
+          hymnBooks={hymnBooks}
+          topics={topics}
+          labels={labels}
+        />
       </SearchAndCreate>
       <div className={styles["grid-one-column-for-hymns"]}>
         {hymns &&

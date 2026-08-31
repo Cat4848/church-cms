@@ -1,0 +1,8 @@
+.align-right {
+  align-items: end;
+  text-align: left;
+}
+
+.lyrics-input-group {
+  width: 100%;
+}

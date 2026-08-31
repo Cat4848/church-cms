@@ -7,9 +7,9 @@ import type { Author } from "../../../domain/Author.ts";
 import type { HymnBook } from "../../../domain/HymnBook.ts";
 import type { Topic } from "../../../domain/Topic.ts";
 import type { Label } from "../../../domain/Label.ts";
-import CreateAndUpdateHymnForm from "../../../components/CreateAndUpdateHymnForm/CreateAndUpdateHymnForm.tsx";
-import type { CreateHymnPayload } from "../Hymns/Hymns.tsx";
+import CreateOrUpdateHymnForm from "../../../components/CreateOrUpdateHymnForm/CreateOrUpdateHymnForm.tsx";
 import type { Hymn } from "../../../domain/Hymn.ts";
+import type { CreateOrUpdateHymnPayload } from "../../../domain/Hymn.ts";
 
 interface Props {
   author: Author;
@@ -30,7 +30,7 @@ const chevronDown: JSX.Element = <img height={20} src="../../../../public/chevro
 const Hymn = (props: Props) => {
   const [isHeadingExpanded, setIsHeadingExpanded] = useState(false);
   const [isUpdatingHymn, setIsUpdatingHymn] = useState(false);
-  const updateHymnFormDataStateFromProps: CreateHymnPayload = useMemo((): CreateHymnPayload => {
+  const updateHymnFormDataStateFromProps: CreateOrUpdateHymnPayload = useMemo((): CreateOrUpdateHymnPayload => {
     return {
       authorId: props.author.authorId,
       authorExtras: props.hymn.authorExtras,
@@ -43,15 +43,17 @@ const Hymn = (props: Props) => {
     };
   }, [props]);
 
-  const [updateHymnFormData, setUpdateHymnFormData] = useState<CreateHymnPayload>(updateHymnFormDataStateFromProps);
+  const [updateHymnFormData, setUpdateHymnFormData] = useState<CreateOrUpdateHymnPayload>(
+    updateHymnFormDataStateFromProps,
+  );
 
   useEffect(() => {
     setUpdateHymnFormData(updateHymnFormDataStateFromProps);
   }, [updateHymnFormDataStateFromProps]);
 
   const handleSetUpdateHymnFormData = (
-    key: keyof CreateHymnPayload,
-    value: CreateHymnPayload[keyof CreateHymnPayload],
+    key: keyof CreateOrUpdateHymnPayload,
+    value: CreateOrUpdateHymnPayload[keyof CreateOrUpdateHymnPayload],
   ) => {
     setUpdateHymnFormData({ ...updateHymnFormData, [key]: value });
   };
@@ -78,7 +80,6 @@ const Hymn = (props: Props) => {
 
   return isUpdatingHymn ? (
     <div>
-      {/*// todo remove some functionality from the hymn heading like the more button and collapse*/}
       <HymnHeading
         hymn={props.hymn}
         author={props.author}
@@ -99,7 +100,7 @@ const Hymn = (props: Props) => {
             ⛌
           </span>
         </div>
-        <CreateAndUpdateHymnForm
+        <CreateOrUpdateHymnForm
           hymnId={props.hymn.hymnId}
           formData={updateHymnFormData}
           setFormData={handleSetUpdateHymnFormData}

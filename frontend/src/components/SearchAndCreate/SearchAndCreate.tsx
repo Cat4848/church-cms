@@ -16,6 +16,8 @@ interface Props {
 const SearchAndCreate = (props: Props) => {
   const [isCreating, setIsCreating] = useState(false);
   const createOn = () => setIsCreating(true);
+  const [isSearchLyrics, setIsSearchLyrics] = useState(false);
+
   const createOff = () => {
     setIsCreating(false);
     if (props?.resetCreateState) {
@@ -31,6 +33,17 @@ const SearchAndCreate = (props: Props) => {
     <div className={styles["box"]}>
       <div className={globalStyles["flex-box-center-gap-1-mar-top-2"]}>
         <input value={props.searchTerm} onChange={(e) => props.onChange(e.target.value)} />
+        {props.entity === "Hymn" && (
+          <div className={styles["toggle-and-text-box"]}>
+            <div className={`${styles["toggle-box"]} ${isSearchLyrics && styles["green-background"]}`}>
+              <div
+                className={`${styles["toggle-knob"]} ${isSearchLyrics ? styles["animation-out"] : styles["animation-in"]}`}
+                onClick={() => setIsSearchLyrics(!isSearchLyrics)}
+              ></div>
+            </div>
+            <div className={styles["search-on-hymns-box"]}>Search on lyrics</div>
+          </div>
+        )}
         <button onClick={createOn} disabled={isCreating}>
           Create ＋
         </button>

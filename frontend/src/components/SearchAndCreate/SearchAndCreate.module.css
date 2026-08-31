@@ -30,3 +30,75 @@
     cursor: pointer;
   }
 }
+
+.toggle-and-text-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  scale: 0.8;
+}
+
+.toggle-box {
+  display: flex;
+  justify-content: start;
+  height: 1.2rem;
+  width: 3rem;
+  border: 2px solid var(--accent-border);
+  border-radius: 6rem;
+  background-color: var(--accent-bg);
+}
+
+.green-background {
+  background-color: #004000;
+}
+
+.toggle-knob {
+  background-color: #aa3bff;
+  height: 1.2rem;
+  width: 1.2rem;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.animation-out {
+  animation: 0.2s ease 0s 1 normal slide-out;
+  animation-fill-mode: forwards;
+}
+
+.animation-in {
+  animation: 0.2s ease 0s 1 normal slide-in;
+  animation-fill-mode: forwards;
+}
+
+.flex-end {
+  justify-content: end;
+}
+
+.search-on-hymns-box {
+  font-size: small;
+}
+
+@keyframes slide-out {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(1.75rem);
+    justify-content: end;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(1.75rem);
+  }
+  to {
+    transform: translateX(0.07rem);
+    justify-content: start;
+  }
+}
+
+input {
+  height: 100%;
+}

@@ -1,4 +1,4 @@
-import { type Dispatch, type JSX, type SetStateAction, useState } from "react";
+import { type Dispatch, type JSX, type SetStateAction, useEffect, useMemo, useState } from "react";
 import styles from "./Hymn.module.css";
 import globalStyles from "../../../css/global.module.css";
 import searchAndCreateStyles from "../../../components/SearchAndCreate/SearchAndCreate.module.css";
@@ -31,20 +31,24 @@ const Hymn = (props: Props) => {
   // controlled only from the HymnHeading component
   const [isHeadingExpanded, setIsHeadingExpanded] = useState(false);
   const [isUpdatingHymn, setIsUpdatingHymn] = useState(false);
-  const [updateHymnFormData, setUpdateHymnFormData] = useState<CreateHymnPayload>({
-    authorId: props.author.authorId,
-    authorExtras: props.hymn.authorExtras,
-    title: props.hymn.title,
-    lyrics: props.hymn.lyrics,
-    hymnBookId: props.hymnBook?.hymnBookId,
-    numberInHymnBook: props.hymn.numberInHymnBook,
-    topicId: props.topic?.topicId,
-    labelId: props.label?.labelId,
-  });
-  if (props.hymn.hymnId === 2) {
-    console.log("updateHymnFormData", updateHymnFormData);
-    console.log("update hymn props", props);
-  }
+  const updateHymnFormDataStateFromProps: CreateHymnPayload = useMemo((): CreateHymnPayload => {
+    return {
+      authorId: props.author.authorId,
+      authorExtras: props.hymn.authorExtras,
+      title: props.hymn.title,
+      lyrics: props.hymn.lyrics,
+      hymnBookId: props.hymnBook?.hymnBookId,
+      numberInHymnBook: props.hymn.numberInHymnBook,
+      topicId: props.topic?.topicId,
+      labelId: props.label?.labelId,
+    };
+  }, [props]);
+
+  const [updateHymnFormData, setUpdateHymnFormData] = useState<CreateHymnPayload>(updateHymnFormDataStateFromProps);
+
+  useEffect(() => {
+    setUpdateHymnFormData(updateHymnFormDataStateFromProps);
+  }, [updateHymnFormDataStateFromProps]);
 
   const handleSetUpdateHymnFormData = (
     key: keyof CreateHymnPayload,

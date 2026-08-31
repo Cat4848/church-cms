@@ -96,6 +96,7 @@ const Hymn = (props: Props) => {
             onClick={() => {
               setIsUpdatingHymn(false);
               setIsHeadingExpanded(false);
+              setUpdateHymnFormData(updateHymnFormDataStateFromProps);
             }}
           >
             ⛌

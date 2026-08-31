@@ -11,13 +11,13 @@
   justify-content: center;
   align-items: center;
   margin-top: 1rem;
-  background-color: #222222;
+  background-color: var(--create-or-update-form-box-bg);
   width: 70%;
   padding: 1rem;
   border-radius: 5px;
   border: 1px solid #323232;
   gap: 2rem;
-  box-shadow: 0 0 8px 1px #222222;
+  box-shadow: 0 0 8px 1px var(--create-or-update-form-box-bg);
 }
 
 .close-button-box {
@@ -30,4 +30,3 @@
     cursor: pointer;
   }
 }
-

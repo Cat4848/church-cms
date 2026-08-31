@@ -65,3 +65,12 @@ label {
   font-style: italic;
   font-size: 0.9rem;
 }
+
+.disabled-div {
+  pointer-events: none;
+  cursor: auto;
+}
+
+.padding-left-point-five-rem {
+  padding-left: 0.5rem;
+}

@@ -12,12 +12,13 @@ import type { Author } from "../../../domain/Author.ts";
 import type { HymnBook } from "../../../domain/HymnBook.ts";
 import type { Topic } from "../../../domain/Topic.ts";
 import type { Label } from "../../../domain/Label.ts";
+import type { Hymn as HymnInterface } from "../../../domain/Hymn.ts";
 import SearchAndCreate from "../../../components/SearchAndCreate/SearchAndCreate.tsx";
 import { useEffect, useState } from "react";
 import styles from "./Hymns.module.css";
 import MandatoryField from "../../../components/MandatoryField/MandatoryField.tsx";
 
-type CreateHymnPayload = {
+export interface CreateHymnPayload {
   authorId: number;
   authorExtras?: string;
   title: string;
@@ -26,7 +27,7 @@ type CreateHymnPayload = {
   numberInHymnBook?: number;
   topicId?: number;
   labelId?: number;
-};
+}
 
 const initialForData: CreateHymnPayload = {
   // initialised as 0 but the isHymnValid marks a hymn invalid if the authorId is still 0
@@ -41,7 +42,7 @@ const initialForData: CreateHymnPayload = {
   labelId: undefined,
 };
 
-enum FormHelpers {
+export enum FormHelpers {
   Reset = "Reset",
 }
 
@@ -53,6 +54,7 @@ const Hymns = () => {
   const { data: labels, isLoading: isLabelsLoading, error: labelsError } = useGetAllLabelsQuery();
 
   const [createHymn, { isLoading: isCreating, error: createError }] = useCreateHymnMutation();
+  const [updateHymn, { isLoading: isUpdating, error: updateError }] = useUpdateHymnMutation();
 
   const [createHymnFormData, setCreateHymnFormData] = useState<CreateHymnPayload>(initialForData);
 
@@ -79,7 +81,15 @@ const Hymns = () => {
   }, [authors, hymnBooks, topics, labels]);
 
   // todo: add loading for all entities
-  if (isLoading || isAuthorsLoading || isHymnBooksError || isTopicsLoading || isLabelsLoading || isCreating) {
+  if (
+    isLoading ||
+    isAuthorsLoading ||
+    isHymnBooksError ||
+    isTopicsLoading ||
+    isLabelsLoading ||
+    isCreating ||
+    isUpdating
+  ) {
     return <Loading />;
   }
   if (!hymns || getAllHymnsError) {
@@ -99,6 +109,9 @@ const Hymns = () => {
   }
   if (createError) {
     return <ErrorFallback error={createError.toString()} />;
+  }
+  if (updateError) {
+    return <ErrorFallback error={updateError.toString()} />;
   }
   // todo: add the errors for creating and updating + all other entities
   if (hymns && !hymns.length) {
@@ -126,6 +139,10 @@ const Hymns = () => {
     closeCreateForm();
     createHymn(createHymnFormData);
     initAuthorIdSelectElementValue();
+  };
+
+  const handleUpdateHymn = (hymn: HymnInterface) => {
+    updateHymn(hymn);
   };
 
   const isHymnValid = (): boolean => {
@@ -183,7 +200,13 @@ const Hymns = () => {
                 <input
                   id="author-extras"
                   value={createHymnFormData.authorExtras}
-                  onChange={(e) => setHymnFormData("authorExtras", e.target.value)}
+                  onChange={(e) => {
+                    if (e.target.value === "") {
+                      setCreateHymnFormData({ ...createHymnFormData, authorExtras: undefined });
+                    } else {
+                      setHymnFormData("authorExtras", e.target.value);
+                    }
+                  }}
                 />
               </div>
             </div>
@@ -258,9 +281,15 @@ const Hymns = () => {
                   id="number-in-hymn-book"
                   type="number"
                   step="1"
-                  min="1"
+                  min="0"
                   value={createHymnFormData.numberInHymnBook ?? ""}
-                  onChange={(e) => setHymnFormData("numberInHymnBook", Number(e.target.value))}
+                  onChange={(e) => {
+                    if (Number(e.target.value) === 0) {
+                      setCreateHymnFormData({ ...createHymnFormData, numberInHymnBook: undefined });
+                    } else {
+                      setHymnFormData("numberInHymnBook", Number(e.target.value));
+                    }
+                  }}
                 />
               </div>
             </div>
@@ -319,15 +348,16 @@ const Hymns = () => {
             return (
               <Hymn
                 key={hymn.hymnId}
-                hymnId={hymn.hymnId}
-                authorName={author.name}
-                authorExtras={hymn.authorExtras}
-                title={hymn.title}
-                lyrics={hymn.lyrics}
-                hymnBookName={hymnBook ? hymnBook.name : "–"}
-                numberInHymnBook={hymnBook ? hymn.numberInHymnBook : "–"}
-                topicName={topic ? topic.name : "–"}
-                labelName={label ? label.name : "–"}
+                hymn={hymn}
+                author={author}
+                hymnBook={hymnBook}
+                topic={topic}
+                label={label}
+                authors={authors}
+                hymnBooks={hymnBooks}
+                topics={topics}
+                labels={labels}
+                onUpdateHymn={handleUpdateHymn}
               />
             );
           })}

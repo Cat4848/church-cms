@@ -16,6 +16,7 @@ import SearchAndCreate from "../../../components/SearchAndCreate/SearchAndCreate
 import { useEffect, useState } from "react";
 import styles from "./Hymns.module.css";
 import CreateOrUpdateHymnForm from "../../../components/CreateOrUpdateHymnForm/CreateOrUpdateHymnForm.tsx";
+import { isHymnValid } from "../../../lib/hymn.ts";
 
 const initialCreateHymnForData: CreateOrUpdateHymnPayload = {
   // initialised as 0 but the isHymnValid marks a hymn invalid if the authorId is still 0
@@ -132,25 +133,6 @@ const Hymns = () => {
     updateHymn(hymn);
   };
 
-  const isHymnValid = (): boolean => {
-    // includes 0 and undefined
-    if (!createHymnFormData.authorId) return false;
-    if (createHymnFormData.authorExtras && createHymnFormData.authorExtras.length > 200) return false;
-    if (!createHymnFormData.title || createHymnFormData.title.length < 3 || createHymnFormData.title.length > 100)
-      return false;
-    if (!createHymnFormData.lyrics || createHymnFormData.lyrics.length < 3 || createHymnFormData.lyrics.length > 21000)
-      return false;
-    if (createHymnFormData.hymnBookId && createHymnFormData.hymnBookId < 1) return false;
-    if (
-      createHymnFormData.numberInHymnBook === 0 ||
-      (createHymnFormData.numberInHymnBook && createHymnFormData.numberInHymnBook < 0)
-    )
-      return false;
-    if (createHymnFormData.topicId && createHymnFormData.topicId < 1) return false;
-    if (createHymnFormData.labelId && createHymnFormData.labelId < 1) return false;
-    return true;
-  };
-
   const handleResetCreateState = (): void => {
     setCreateHymnFormData(initialCreateHymnForData);
   };
@@ -161,8 +143,8 @@ const Hymns = () => {
         searchTerm={searchHymnTerm}
         onChange={handleEditSearchTerm}
         entity="Hymn"
-        isCreateButtonDisabled={!isHymnValid()}
-        isCreateFormValid={isHymnValid()}
+        isCreateButtonDisabled={!isHymnValid(createHymnFormData)}
+        isCreateFormValid={isHymnValid(createHymnFormData)}
         onCreate={handleCreateHymn}
         resetCreateState={handleResetCreateState}
       >

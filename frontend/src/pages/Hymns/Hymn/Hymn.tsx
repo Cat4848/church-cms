@@ -10,6 +10,7 @@ import type { Label } from "../../../domain/Label.ts";
 import CreateOrUpdateHymnForm from "../../../components/CreateOrUpdateHymnForm/CreateOrUpdateHymnForm.tsx";
 import type { Hymn } from "../../../domain/Hymn.ts";
 import type { CreateOrUpdateHymnPayload } from "../../../domain/Hymn.ts";
+import { isHymnValid } from "../../../lib/hymn.ts";
 
 interface Props {
   author: Author;
@@ -101,7 +102,6 @@ const Hymn = (props: Props) => {
           </span>
         </div>
         <CreateOrUpdateHymnForm
-          hymnId={props.hymn.hymnId}
           formData={updateHymnFormData}
           setFormData={handleSetUpdateHymnFormData}
           setFormDataRaw={setUpdateHymnFormData}
@@ -110,7 +110,9 @@ const Hymn = (props: Props) => {
           topics={props.topics}
           labels={props.labels}
         />
-        <button onClick={handleUpdateHymn}>Update</button>
+        <button onClick={handleUpdateHymn} disabled={!isHymnValid(updateHymnFormData)}>
+          Update
+        </button>
       </div>
     </div>
   ) : (

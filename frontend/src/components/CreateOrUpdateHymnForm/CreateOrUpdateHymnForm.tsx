@@ -9,7 +9,6 @@ import type { Label } from "../../domain/Label.ts";
 import type { Dispatch, SetStateAction } from "react";
 
 interface Props {
-  hymnId?: number;
   formData: CreateOrUpdateHymnPayload;
   setFormData: (
     key: keyof CreateOrUpdateHymnPayload,

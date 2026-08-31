@@ -15,7 +15,9 @@ import type { Hymn as HymnInterface, CreateOrUpdateHymnPayload } from "../../../
 import SearchAndCreate from "../../../components/SearchAndCreate/SearchAndCreate.tsx";
 import { useEffect, useState } from "react";
 import styles from "./Hymns.module.css";
-import CreateOrUpdateHymnForm from "../../../components/CreateOrUpdateHymnForm/CreateOrUpdateHymnForm.tsx";
+import CreateOrUpdateHymnForm, {
+  FormHelpers,
+} from "../../../components/CreateOrUpdateHymnForm/CreateOrUpdateHymnForm.tsx";
 import { isHymnValid } from "../../../lib/hymn.ts";
 
 const initialCreateHymnForData: CreateOrUpdateHymnPayload = {
@@ -44,6 +46,7 @@ const Hymns = () => {
   const [createHymnFormData, setCreateHymnFormData] = useState<CreateOrUpdateHymnPayload>(initialCreateHymnForData);
 
   const [searchHymnTerm, setSearchHymnTerm] = useState("");
+  const [isSearchLyrics, setIsSearchLyrics] = useState(false);
 
   const handleSetCreateHymnFormData = (
     key: keyof CreateOrUpdateHymnPayload,
@@ -119,7 +122,7 @@ const Hymns = () => {
     return <NoContent entity="Labels" />;
   }
 
-  const handleEditSearchTerm = (searchTerm: string): void => {
+  const handleChangeSearchTerm = (searchTerm: string): void => {
     setSearchHymnTerm(searchTerm);
   };
 
@@ -137,16 +140,38 @@ const Hymns = () => {
     setCreateHymnFormData(initialCreateHymnForData);
   };
 
+  let filteredHymns: Hymn[] = hymns;
+  if (isSearchLyrics) {
+    // do backend searching on lyrics
+  } else {
+    filteredHymns = hymns.filter((hymn) => {
+      const searchTerm: string = searchHymnTerm.toLowerCase();
+      if (hymn.title.toLowerCase().includes(searchTerm)) {
+        return true;
+      }
+      const author: Author | undefined = authors.find((a) => a.authorId === hymn.authorId);
+      if (author && author.name.toLowerCase().includes(searchTerm)) {
+        return true;
+      }
+      if (String(hymn.numberInHymnBook) === searchTerm) {
+        return true;
+      }
+      return false;
+    });
+  }
+
   return (
     <div>
       <SearchAndCreate
         searchTerm={searchHymnTerm}
-        onChange={handleEditSearchTerm}
+        onChangeSearchTerm={handleChangeSearchTerm}
         entity="Hymn"
         isCreateButtonDisabled={!isHymnValid(createHymnFormData)}
         isCreateFormValid={isHymnValid(createHymnFormData)}
         onCreate={handleCreateHymn}
         resetCreateState={handleResetCreateState}
+        isSearchLyrics={isSearchLyrics}
+        setIsSearchLyrics={setIsSearchLyrics}
       >
         <CreateOrUpdateHymnForm
           formData={createHymnFormData}
@@ -158,10 +183,44 @@ const Hymns = () => {
           labels={labels}
         />
       </SearchAndCreate>
+      <div className={styles["dropdown-filters"]}>
+        <select>
+          <option key="select-value-hymn-book" value={FormHelpers.Reset}>
+            -- Select --
+          </option>
+          {topics.map((topic) => (
+            <option key={topic.topicId} value={topic.topicId}>
+              {topic.name}
+            </option>
+          ))}
+        </select>
+
+        <select>
+          <option key="select-value-topic" value={FormHelpers.Reset}>
+            -- Select --
+          </option>
+          {topics.map((topic) => (
+            <option key={topic.topicId} value={topic.topicId}>
+              {topic.name}
+            </option>
+          ))}
+        </select>
+
+        <select>
+          <option key="select-value-label" value={FormHelpers.Reset}>
+            -- Select --
+          </option>
+          {labels.map((label) => (
+            <option key={label.labelId} value={label.labelId}>
+              {label.name}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className={styles["grid-one-column-for-hymns"]}>
-        {hymns &&
-          hymns.length &&
-          hymns.map((hymn) => {
+        {filteredHymns &&
+          filteredHymns.length &&
+          filteredHymns.map((hymn) => {
             const author: Author | undefined = authors.find((a) => a.authorId === hymn.authorId);
             if (!author) {
               return <NoContent entity="Authors" />;

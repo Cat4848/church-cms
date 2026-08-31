@@ -17,3 +17,7 @@ select {
   row-gap: 0.6rem;
   margin-top: 4rem;
 }
+
+.dropdown-filters {
+  display: flex;
+}

@@ -19,6 +19,7 @@ import CreateOrUpdateHymnForm, {
   FormHelpers,
 } from "../../../components/CreateOrUpdateHymnForm/CreateOrUpdateHymnForm.tsx";
 import { isHymnValid } from "../../../lib/hymn.ts";
+import hymn from "../Hymn/Hymn.tsx";
 
 const initialCreateHymnForData: CreateOrUpdateHymnPayload = {
   // initialised as 0 but the isHymnValid marks a hymn invalid if the authorId is still 0
@@ -184,18 +185,8 @@ const Hymns = () => {
         />
       </SearchAndCreate>
       <div className={styles["dropdown-filters"]}>
-        <select>
-          <option key="select-value-hymn-book" value={FormHelpers.Reset}>
-            -- Select --
-          </option>
-          {topics.map((topic) => (
-            <option key={topic.topicId} value={topic.topicId}>
-              {topic.name}
-            </option>
-          ))}
-        </select>
-
-        <select>
+        <label htmlFor={"select-value-topic"}>Topic</label>
+        <select id={"select-value-topic"}>
           <option key="select-value-topic" value={FormHelpers.Reset}>
             -- Select --
           </option>
@@ -206,13 +197,26 @@ const Hymns = () => {
           ))}
         </select>
 
-        <select>
+        <label htmlFor={"select-value-label"}>Label</label>
+        <select id="select-value-label">
           <option key="select-value-label" value={FormHelpers.Reset}>
             -- Select --
           </option>
           {labels.map((label) => (
             <option key={label.labelId} value={label.labelId}>
               {label.name}
+            </option>
+          ))}
+        </select>
+
+        <label htmlFor={"select-value-hymn-book"}>Hymn Book</label>
+        <select id="select-value-hymn-book">
+          <option key="select-value-hymn-book" value={FormHelpers.Reset}>
+            -- Select --
+          </option>
+          {hymnBooks.map((hymnBook) => (
+            <option key={hymnBook.hymnBookId} value={hymnBook.hymnBookId}>
+              {hymnBook.name}
             </option>
           ))}
         </select>

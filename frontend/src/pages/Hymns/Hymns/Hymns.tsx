@@ -19,7 +19,6 @@ import CreateOrUpdateHymnForm, {
   FormHelpers,
 } from "../../../components/CreateOrUpdateHymnForm/CreateOrUpdateHymnForm.tsx";
 import { isHymnValid } from "../../../lib/hymn.ts";
-import hymn from "../Hymn/Hymn.tsx";
 
 const initialCreateHymnForData: CreateOrUpdateHymnPayload = {
   // initialised as 0 but the isHymnValid marks a hymn invalid if the authorId is still 0
@@ -48,6 +47,10 @@ const Hymns = () => {
 
   const [searchHymnTerm, setSearchHymnTerm] = useState("");
   const [isSearchLyrics, setIsSearchLyrics] = useState(false);
+
+  const [topicFilter, setTopicFilter] = useState<number | undefined>(undefined);
+  const [labelFilter, setLabelFilter] = useState<number | undefined>(undefined);
+  const [hymnBookFilter, setHymnBookFilter] = useState<number | undefined>(undefined);
 
   const handleSetCreateHymnFormData = (
     key: keyof CreateOrUpdateHymnPayload,
@@ -145,7 +148,31 @@ const Hymns = () => {
   if (isSearchLyrics) {
     // do backend searching on lyrics
   } else {
-    filteredHymns = hymns.filter((hymn) => {
+    filteredHymns = filteredHymns.filter((hymn) => {
+      if (topicFilter) {
+        return hymn.topicId === topicFilter;
+      } else {
+        return true;
+      }
+    });
+
+    filteredHymns = filteredHymns.filter((hymn) => {
+      if (labelFilter) {
+        return hymn.labelId === labelFilter;
+      } else {
+        return true;
+      }
+    });
+
+    filteredHymns = filteredHymns.filter((hymn) => {
+      if (hymnBookFilter) {
+        return hymn.hymnBookId === hymnBookFilter;
+      } else {
+        return true;
+      }
+    });
+
+    filteredHymns = filteredHymns.filter((hymn) => {
       const searchTerm: string = searchHymnTerm.toLowerCase();
       if (hymn.title.toLowerCase().includes(searchTerm)) {
         return true;
@@ -160,7 +187,6 @@ const Hymns = () => {
       return false;
     });
   }
-
   return (
     <div>
       <SearchAndCreate
@@ -185,20 +211,34 @@ const Hymns = () => {
         />
       </SearchAndCreate>
       <div className={styles["dropdown-filters"]}>
-        <label htmlFor={"select-value-topic"}>Topic</label>
-        <select id={"select-value-topic"}>
-          <option key="select-value-topic" value={FormHelpers.Reset}>
-            -- Select --
-          </option>
-          {topics.map((topic) => (
-            <option key={topic.topicId} value={topic.topicId}>
-              {topic.name}
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <label htmlFor={"select-value-topic"}>Topic</label>
+          <select
+            id="select-value-topic"
+            value={topicFilter}
+            onChange={(e) => {
+              setTopicFilter(e.target.value === FormHelpers.Reset ? undefined : Number(e.target.value));
+            }}
+          >
+            <option key="select-value-topic" value={FormHelpers.Reset}>
+              -- Select --
             </option>
-          ))}
-        </select>
+            {topics.map((topic) => (
+              <option key={topic.topicId} value={topic.topicId}>
+                {topic.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
         <label htmlFor={"select-value-label"}>Label</label>
-        <select id="select-value-label">
+        <select
+          id="select-value-label"
+          value={labelFilter}
+          onChange={(e) => {
+            setLabelFilter(e.target.value === FormHelpers.Reset ? undefined : Number(e.target.value));
+          }}
+        >
           <option key="select-value-label" value={FormHelpers.Reset}>
             -- Select --
           </option>
@@ -210,7 +250,13 @@ const Hymns = () => {
         </select>
 
         <label htmlFor={"select-value-hymn-book"}>Hymn Book</label>
-        <select id="select-value-hymn-book">
+        <select
+          id="select-value-hymn-book"
+          value={hymnBookFilter}
+          onChange={(e) => {
+            setHymnBookFilter(e.target.value === FormHelpers.Reset ? undefined : Number(e.target.value));
+          }}
+        >
           <option key="select-value-hymn-book" value={FormHelpers.Reset}>
             -- Select --
           </option>

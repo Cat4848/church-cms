@@ -21,6 +21,21 @@
   gap: 1rem;
 }
 
+.flex-box-column-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+}
+
+.flex-box-column-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  width: 100%;
+}
+
 .error-box {
   color: red;
   font-size: 0.9rem;
@@ -41,6 +56,40 @@
   text-align: left;
 }
 
+.text-bold {
+  font-weight: bold;
+}
+
 .width-100 {
   width: 100%;
+}
+
+.width-24 {
+  width: 24%;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+}
+
+.input-group-grid-two-columns {
+  display: grid;
+  grid-template-columns: 12rem 12rem;
+}
+
+label {
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.disabled-div {
+  pointer-events: none;
+  cursor: auto;
+}
+
+.padding-left-point-five-rem {
+  padding-left: 0.5rem;
 }

@@ -11,6 +11,7 @@ import { nameRegexp, invalidNameErrorMessage } from "../../lib/constants.ts";
 import { useState } from "react";
 import SearchAndCreate from "../../components/SearchAndCreate/SearchAndCreate.tsx";
 import globalStyles from "../../css/global.module.css";
+import MandatoryField from "../../components/MandatoryField/MandatoryField.tsx";
 
 const HymnBooks = () => {
   const { data: hymnBooks, error: getAllHymnBooksError, isLoading } = useGetAllHymnBooksQuery();
@@ -53,7 +54,7 @@ const HymnBooks = () => {
     <div>
       <SearchAndCreate
         searchTerm={searchHymnBookName}
-        onChange={handleEditSearchTerm}
+        onChangeSearchTerm={handleEditSearchTerm}
         entity={"Hymn Book"}
         isCreateButtonDisabled={newHymnBookName.length < 3 || newHymnBookName.length > 100}
         isCreateFormValid={!createHymnBookError}
@@ -62,7 +63,9 @@ const HymnBooks = () => {
       >
         <div className={globalStyles["flex-box-column-center-gap-1"]}>
           <div className={globalStyles["flex-box-center-gap-1"]}>
-            <label htmlFor="hymn-book-name">Hymn Book Name</label>
+            <label htmlFor="hymn-book-name">
+              <MandatoryField /> Hymn Book Name
+            </label>
             <input
               id="hymn-book-name"
               value={newHymnBookName}

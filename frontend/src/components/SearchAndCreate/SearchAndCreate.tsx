@@ -1,20 +1,24 @@
 import globalStyles from "../../css/global.module.css";
 import styles from "./SearchAndCreate.module.css";
-import { type JSX, useState } from "react";
+import { type JSX, useState, type Dispatch, type SetStateAction } from "react";
 
 interface Props {
   searchTerm: string;
-  onChange: (searchTerm: string) => void;
+  onChangeSearchTerm: (searchTerm: string) => void;
   children: JSX.Element;
-  entity: "Author" | "Hymn Book" | "Topic" | "Label";
+  entity: "Author" | "Hymn Book" | "Topic" | "Label" | "Hymn";
   isCreateButtonDisabled?: boolean;
   isCreateFormValid?: boolean;
   onCreate: (closeCreateForm: () => void) => void;
   resetCreateState?: () => void;
+  isSearchLyrics?: boolean;
+  setIsSearchLyrics?: Dispatch<SetStateAction<boolean>>;
 }
 
 const SearchAndCreate = (props: Props) => {
   const [isCreating, setIsCreating] = useState(false);
+  const [toggleState, setToggleState] = useState<"idle" | "out" | "in">("idle");
+
   const createOn = () => setIsCreating(true);
   const createOff = () => {
     setIsCreating(false);
@@ -27,10 +31,39 @@ const SearchAndCreate = (props: Props) => {
     props.onCreate(createOff);
   };
 
+  const handleSearchOnLyrics = () => {
+    if (props.setIsSearchLyrics) {
+      props.setIsSearchLyrics(!props.isSearchLyrics);
+    }
+    props.onChangeSearchTerm("");
+    handleToggleState();
+  };
+
+  const handleToggleState = () => {
+    setToggleState((prev) => {
+      if (prev === "idle" || prev === "in") {
+        return "out";
+      } else {
+        return "in";
+      }
+    });
+  };
+
   return (
     <div className={styles["box"]}>
       <div className={globalStyles["flex-box-center-gap-1-mar-top-2"]}>
-        <input value={props.searchTerm} onChange={(e) => props.onChange(e.target.value)} />
+        <input value={props.searchTerm} onChange={(e) => props.onChangeSearchTerm(e.target.value)} />
+        {props.entity === "Hymn" && (
+          <div className={styles["toggle-and-text-box"]}>
+            <div className={`${styles["toggle-box"]} ${toggleState === "out" && styles["green-background"]}`}>
+              <div
+                className={`${styles["toggle-knob"]} ${toggleState === "out" ? styles["animation-out"] : toggleState === "in" ? styles["animation-in"] : ""}`}
+                onClick={handleSearchOnLyrics}
+              ></div>
+            </div>
+            <div className={styles["search-on-hymns-box"]}>Search on lyrics</div>
+          </div>
+        )}
         <button onClick={createOn} disabled={isCreating}>
           Create ＋
         </button>

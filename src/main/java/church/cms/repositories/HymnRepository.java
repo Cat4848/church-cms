@@ -2,6 +2,7 @@ package church.cms.repositories;
 
 import church.cms.domain.Hymn;
 import church.cms.exceptions.InvalidEntityException;
+import church.cms.servlets.hymns.HymnsMapper;
 import org.slf4j.Logger;
 
 import javax.sql.DataSource;
@@ -18,44 +19,46 @@ public class HymnRepository implements Repository<Hymn> {
     this.logger = logger;
   }
 
-  // TODO implement get with pagination
   @Override
   public List<Hymn> list() throws SQLException {
     logger.info("list hymns: start");
 
     String sql = "SELECT * FROM hymns;";
+    List<Hymn> hymns = listHymns(sql);
 
+    logger.info("list hymns: end");
+
+    return hymns;
+  }
+
+  public List<Hymn> list(String searchLyricsQuery) throws SQLException {
+    logger.info("list hymns with search lyrics query: start");
+
+    String sql = "SELECT * FROM hymns WHERE MATCH(lyrics) AGAINST(?);";
+    List<Hymn> hymns = new ArrayList<>();
+
+    try (Connection conn = dataSource.getConnection();
+         PreparedStatement stm = conn.prepareStatement(sql)) {
+      stm.setString(1, searchLyricsQuery);
+      try (ResultSet rs = stm.executeQuery()) {
+        hymns = new HymnsMapper().map(rs);
+      }
+    }
+
+    logger.info("list hymns with search lyrics query: end");
+
+    return hymns;
+  }
+
+  private List<Hymn> listHymns(String sql) throws SQLException {
     List<Hymn> hymns = new ArrayList<>();
 
     try (Connection conn = dataSource.getConnection();
          PreparedStatement stm = conn.prepareStatement(sql)) {
       try (ResultSet rs = stm.executeQuery()) {
-        while (rs.next()) {
-          Integer hymnId = rs.getInt("hymn_id");
-          Integer authorId = rs.getInt("author_id");
-          String authorExtras = rs.getString("author_extras");
-          String title = rs.getString("title");
-          String lyrics = rs.getString("lyrics");
-          Integer hymnBookId = rs.getInt("hymn_book_id");
-          Integer numberInHymnBook = rs.getInt("number_in_hymn_book");
-          Integer topicId = rs.getInt("topic_id");
-          Integer labelId = rs.getInt("label_id");
-
-          Hymn hymn = new Hymn(hymnId,
-                               authorId,
-                               authorExtras,
-                               title,
-                               lyrics,
-                               hymnBookId,
-                               numberInHymnBook,
-                               topicId,
-                               labelId);
-          hymns.add(hymn);
-        }
+        hymns = new HymnsMapper().map(rs);
       }
     }
-
-    logger.info("list hymns: end");
 
     return hymns;
   }
@@ -65,16 +68,18 @@ public class HymnRepository implements Repository<Hymn> {
     logger.info("save hymn: start: hymnId: {}", hymn.getHymnId());
 
     String sql;
-    List<Object> params = new ArrayList<>(List.of(
-            hymn.getAuthorId(),
-            hymn.getAuthorExtras(),
-            hymn.getTitle(),
-            hymn.getLyrics(),
-            hymn.getHymnBookId(),
-            hymn.getNumberInHymnBook(),
-            hymn.getTopicId(),
-            hymn.getLabelId()
-    ));
+    List<Object> params = new ArrayList<>();
+    // if some of the hymn properties are null, they will be null in the SQL query too
+    // of the optional ones are missing from the request body, Jackson will assign null
+    // the order matters
+    params.add(hymn.getAuthorId());
+    params.add(hymn.getAuthorExtras());
+    params.add(hymn.getTitle());
+    params.add(hymn.getLyrics());
+    params.add(hymn.getHymnBookId());
+    params.add(hymn.getNumberInHymnBook());
+    params.add(hymn.getTopicId());
+    params.add(hymn.getLabelId());
 
     if (hymn.getHymnId() == null) {
       sql = "INSERT INTO hymns (" +
@@ -206,21 +211,21 @@ public class HymnRepository implements Repository<Hymn> {
     logger.info("createTableIfNotExists hymns: start");
 
     String sql = "CREATE TABLE IF NOT EXISTS hymns (" +
-                 "hymn_id INT UNSIGNED NOT NULL AUTO_INCREMENT," +
-                 "author_id INT UNSIGNED NOT NULL," +
-                 "author_extras VARCHAR (200)," +
-                 "title VARCHAR(100) NOT NULL," +
-                 "lyrics TEXT NOT NULL," +
-                 "hymn_book_id INT UNSIGNED," +
-                 "number_in_hymn_book INT UNSIGNED," +
-                 "topic_id INT UNSIGNED," +
-                 "label_id INT UNSIGNED," +
-                 "PRIMARY KEY (hymn_id)," +
-                 "FOREIGN KEY(author_id) REFERENCES authors (author_id)," +
-                 "FOREIGN KEY(hymn_book_id) REFERENCES hymn_books (hymn_book_id)," +
-                 "FOREIGN KEY(topic_id) REFERENCES topics (topic_id)," +
-                 "FOREIGN KEY(label_id) REFERENCES labels (label_id)," +
-                 "FULLTEXT INDEX ft_lyrics (lyrics));";
+            "hymn_id INT UNSIGNED NOT NULL AUTO_INCREMENT," +
+            "author_id INT UNSIGNED NOT NULL," +
+            "author_extras VARCHAR (200)," +
+            "title VARCHAR(100) NOT NULL," +
+            "lyrics TEXT NOT NULL," +
+            "hymn_book_id INT UNSIGNED," +
+            "number_in_hymn_book INT UNSIGNED," +
+            "topic_id INT UNSIGNED," +
+            "label_id INT UNSIGNED," +
+            "PRIMARY KEY (hymn_id)," +
+            "FOREIGN KEY(author_id) REFERENCES authors (author_id)," +
+            "FOREIGN KEY(hymn_book_id) REFERENCES hymn_books (hymn_book_id)," +
+            "FOREIGN KEY(topic_id) REFERENCES topics (topic_id)," +
+            "FOREIGN KEY(label_id) REFERENCES labels (label_id)," +
+            "FULLTEXT INDEX ft_lyrics (lyrics));";
 
     try (Connection conn = dataSource.getConnection();
          PreparedStatement stm = conn.prepareStatement(sql)) {

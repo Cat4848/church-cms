@@ -7,6 +7,7 @@ import SearchAndCreate from "../../../components/SearchAndCreate/SearchAndCreate
 import { useState } from "react";
 import globalStyles from "../../../css/global.module.css";
 import { nameRegexp, invalidNameErrorMessage } from "../../../lib/constants.ts";
+import MandatoryField from "../../../components/MandatoryField/MandatoryField.tsx";
 
 const Topics = () => {
   const { data: topics, error: getAllTopicsError, isLoading } = useGetAllTopicsQuery();
@@ -49,7 +50,7 @@ const Topics = () => {
     <div>
       <SearchAndCreate
         searchTerm={searchTopicName}
-        onChange={handleEditSearchTerm}
+        onChangeSearchTerm={handleEditSearchTerm}
         entity="Topic"
         isCreateButtonDisabled={newTopicName.length < 3 || newTopicName.length > 100}
         isCreateFormValid={!createTopicError}
@@ -58,7 +59,9 @@ const Topics = () => {
       >
         <div className={globalStyles["flex-box-column-center-gap-1"]}>
           <div className={globalStyles["flex-box-center-gap-1"]}>
-            <label htmlFor="topic-name">Topic Name</label>
+            <label htmlFor="topic-name">
+              <MandatoryField /> Topic Name
+            </label>
             <input
               id="topic-name"
               value={newTopicName}

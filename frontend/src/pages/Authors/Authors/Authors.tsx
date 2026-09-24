@@ -11,6 +11,7 @@ import SearchAndCreate from "../../../components/SearchAndCreate/SearchAndCreate
 import { useState } from "react";
 import globalStyles from "../../../css/global.module.css";
 import { nameRegexp, invalidNameErrorMessage } from "../../../lib/constants.ts";
+import MandatoryField from "../../../components/MandatoryField/MandatoryField.tsx";
 
 const Authors = () => {
   const { data: authors, error: getAllAuthorsError, isLoading } = useGetAllAuthorsQuery();
@@ -53,7 +54,7 @@ const Authors = () => {
     <div>
       <SearchAndCreate
         searchTerm={searchAuthorName}
-        onChange={handleEditSearchTerm}
+        onChangeSearchTerm={handleEditSearchTerm}
         entity="Author"
         isCreateButtonDisabled={newAuthorName.length < 3 || newAuthorName.length > 100}
         isCreateFormValid={!createAuthorError}
@@ -62,7 +63,9 @@ const Authors = () => {
       >
         <div className={globalStyles["flex-box-column-center-gap-1"]}>
           <div className={globalStyles["flex-box-center-gap-1"]}>
-            <label htmlFor="author-name">Author Name</label>
+            <label htmlFor="author-name">
+              <MandatoryField /> Author Name
+            </label>
             <input
               id="author-name"
               value={newAuthorName}

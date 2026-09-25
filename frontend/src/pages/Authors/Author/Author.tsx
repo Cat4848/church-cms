@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Author } from "../../../domain/Author.ts";
 import globalStyles from "../../../css/global.module.css";
 import { nameRegexp, invalidNameErrorMessage } from "../../../lib/constants.ts";
+import { useDeleteAuthorMutation } from "../../../store/api/authorsApi.ts";
 
 interface Props {
   authorId: number;
@@ -13,6 +14,10 @@ const Author = ({ authorId, name, onUpdate }: Props) => {
   const [isEdit, setIsEdit] = useState(false);
   const [authorName, setAuthorName] = useState("");
   const [updateAuthorError, setUpdateAuthorError] = useState("");
+  const [
+    deleteAuthor,
+    { isLoading: isDeleteAuthorLoading, isError: isDeleteAuthorError, isSuccess: isDeleteAuthorSuccess },
+  ] = useDeleteAuthorMutation();
 
   const startEditing = (): void => {
     setIsEdit(true);

@@ -40,6 +40,7 @@ public class DeleteAuthorUseCase {
       throw new IllegalArgumentException("The author with author ID " + authorId + " doesn't exist.");
     }
 
+    // todo: could check if this author has hymns before deleting
     authorRepository.delete(authorId);
 
     res.setStatus(HttpServletResponse.SC_OK);

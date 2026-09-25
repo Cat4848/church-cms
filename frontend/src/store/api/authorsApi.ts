@@ -27,7 +27,14 @@ export const authorsApi = createApi({
       }),
       invalidatesTags: ["Authors"],
     }),
+    deleteAuthor: builder.mutation<void, number>({
+      query: (authorId: number) => ({
+        url: `/authors/${authorId}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
-export const { useGetAllAuthorsQuery, useCreateAuthorMutation, useUpdateAuthorMutation } = authorsApi;
+export const { useGetAllAuthorsQuery, useCreateAuthorMutation, useUpdateAuthorMutation, useDeleteAuthorMutation } =
+  authorsApi;

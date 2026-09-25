@@ -12,16 +12,18 @@ import { useState } from "react";
 import globalStyles from "../../../css/global.module.css";
 import { nameRegexp, invalidNameErrorMessage } from "../../../lib/constants.ts";
 import MandatoryField from "../../../components/MandatoryField/MandatoryField.tsx";
+import { useGetAllHymnsQuery } from "../../../store/api/hymnsApi.ts";
 
 const Authors = () => {
   const { data: authors, error: getAllAuthorsError, isLoading } = useGetAllAuthorsQuery();
   const [createAuthor, { isLoading: isCreating, error: createError }] = useCreateAuthorMutation();
   const [updateAuthor, { isLoading: isUpdating, error: updateError }] = useUpdateAuthorMutation();
+  const { data: hymns, isLoading: isGetAllHymnsLoading } = useGetAllHymnsQuery(undefined);
   const [searchAuthorName, setSearchAuthorName] = useState("");
   const [newAuthorName, setNewAuthorName] = useState("");
   const [createAuthorError, setCreateAuthorError] = useState("");
 
-  if (isLoading || isCreating || isUpdating) {
+  if (isLoading || isCreating || isUpdating || isGetAllHymnsLoading) {
     return <Loading />;
   }
   if (getAllAuthorsError) {
@@ -85,7 +87,13 @@ const Authors = () => {
             .filter((author) => author.name.toLowerCase().includes(searchAuthorName.toLowerCase()))
             .map((author) => {
               return (
-                <Author key={author.authorId} authorId={author.authorId} name={author.name} onUpdate={updateAuthor} />
+                <Author
+                  key={author.authorId}
+                  authorId={author.authorId}
+                  name={author.name}
+                  isDeletable={hymns ? hymns.some((hymn) => hymn.authorId === author.authorId) : true}
+                  onUpdate={updateAuthor}
+                />
               );
             })}
       </div>

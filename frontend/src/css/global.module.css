@@ -45,7 +45,7 @@
 
 .grid-two-columns {
   display: grid;
-  grid-template-columns: 15rem 6rem;
+  grid-template-columns: 20rem 15rem;
   justify-content: center;
   column-gap: 2rem;
   row-gap: 2rem;
